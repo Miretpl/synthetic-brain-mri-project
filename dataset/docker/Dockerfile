@@ -1,4 +1,4 @@
-FROM python:3.10.14
+FROM python:3.13.0-slim
 LABEL authors="miretpl"
 
 RUN apt-get update && \
