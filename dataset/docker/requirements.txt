@@ -1,0 +1,7 @@
+opencv-python==4.10.0.84
+nibabel==5.2.1
+numpy==2.0.1
+tqdm==4.66.5
+pillow==10.4.0
+scikit-learn==1.5.1
+pandas==2.2.2
