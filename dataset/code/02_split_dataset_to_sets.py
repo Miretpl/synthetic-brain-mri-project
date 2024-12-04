@@ -37,6 +37,8 @@ def calculate_statistics(data: 'pd.DataFrame') -> dict:
     }
 
 
+print("Split images to train, validation and test sets")
+
 ids_dir = Path('/data/ids/raw')
 ids_dir.mkdir(parents=True, exist_ok=True)
 
