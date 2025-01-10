@@ -37,7 +37,7 @@ def get_image(path: str, source_image: Optional[np.ndarray] = None) -> tuple[np.
     return (img * 255).astype('uint8'), empty_seg_number
 
 
-print("Extract images from nil format to PNG")
+print('Extract images from nil format to PNG')
 
 images_paths = sorted(glob('/data/raw/BraTS2021_Training_Data/**/*flair.nii.gz'))
 img_quantity, empty_seg_map_img_quantity = 0, 0

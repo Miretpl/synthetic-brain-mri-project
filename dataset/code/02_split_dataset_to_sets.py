@@ -20,9 +20,9 @@ def create_datalist(set_paths: list[Path], desc: str) -> 'pd.DataFrame':
             seg_rel_path = flair_rel_path.parent / (flair_rel_path.name.replace('flair', 'seg'))
 
             data_list.append({
-                "flair": flair_rel_path,
-                "seg": seg_rel_path,
-                "status": flair_rel_path.name.split('_')[2][:-4]
+                'flair': flair_rel_path,
+                'seg': seg_rel_path,
+                'status': flair_rel_path.name.split('_')[2][:-4]
             })
 
     return pd.DataFrame(data_list)
@@ -37,7 +37,7 @@ def calculate_statistics(data: 'pd.DataFrame') -> dict:
     }
 
 
-print("Split images to train, validation and test sets")
+print('Split images to train, validation and test sets')
 
 ids_dir = Path('/data/ids/raw')
 ids_dir.mkdir(parents=True, exist_ok=True)
