@@ -282,7 +282,7 @@ def log_ldm_sample_unconditioned(
     latent = torch.randn((1,) + spatial_shape)
     latent = latent.to(device)
 
-    prompt_embeds = torch.cat((49406 * torch.ones(1, 1), 49407 * torch.ones(1, 76)), 1).long()
+    prompt_embeds = torch.cat((49406 * torch.ones(1, 1), 49407 * torch.ones(1, 76)), 1).long().to(device)
     prompt_embeds = text_encoder(prompt_embeds.squeeze(1))
     prompt_embeds = prompt_embeds[0]
 
