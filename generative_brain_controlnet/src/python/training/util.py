@@ -24,6 +24,7 @@ from tqdm import tqdm
 # ----------------------------------------------------------------------------------------------------------------------
 def get_datalist(
     ids_path: str,
+    root_path: str,
     extended_report: bool = False,
 ):
     """Get data dicts for data loaders."""
@@ -33,8 +34,8 @@ def get_datalist(
     for index, row in df.iterrows():
         data_dicts.append(
             {
-                "flair": f"{row['flair']}",
-                "seg": f"{row['seg']}",
+                "flair": f"{root_path}/{row['flair']}",
+                "seg": f"{root_path}/{row['seg']}",
                 "report": "T1-weighted image of a brain.",
             }
         )
@@ -48,6 +49,7 @@ def get_dataloader(
     batch_size: int,
     training_ids: str,
     validation_ids: str,
+    root_path: str,
     num_workers: int = 8,
     model_type: str = "autoencoder",
 ):
@@ -161,7 +163,7 @@ def get_dataloader(
             ]
         )
 
-    train_dicts = get_datalist(ids_path=training_ids)
+    train_dicts = get_datalist(ids_path=training_ids, root_path=root_path)
     train_ds = PersistentDataset(data=train_dicts, transform=train_transforms, cache_dir=str(cache_dir))
     train_loader = DataLoader(
         train_ds,
@@ -173,7 +175,7 @@ def get_dataloader(
         persistent_workers=True,
     )
 
-    val_dicts = get_datalist(ids_path=validation_ids)
+    val_dicts = get_datalist(ids_path=validation_ids, root_path=root_path)
     val_ds = PersistentDataset(data=val_dicts, transform=val_transforms, cache_dir=str(cache_dir))
     val_loader = DataLoader(
         val_ds,

@@ -35,6 +35,7 @@ def parse_args():
     parser.add_argument("--eval_freq", type=int, default=10, help="Number of epochs to between evaluations.")
     parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
     parser.add_argument("--experiment", help="Mlflow experiment name.")
+    parser.add_argument("--data_root_path", help="Root path for the dataset.")
 
     args = parser.parse_args()
     return args
@@ -84,6 +85,7 @@ def main(args):
         batch_size=args.batch_size,
         training_ids=args.training_ids,
         validation_ids=args.validation_ids,
+        root_path=args.data_root_path,
         num_workers=args.num_workers,
         model_type="diffusion",
     )
