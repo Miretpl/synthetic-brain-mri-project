@@ -1,0 +1,22 @@
+param(
+    [String]$dataPath,
+    [String]$configPath,
+    [String]$artifactPath,
+    [String]$modelPath
+)
+
+Write-Host "Docker image - build"
+docker build -t generative-brain-controlnet:1.0.0 -f ./docker/Dockerfile .
+
+Write-Host "Docker image - run"
+docker run `
+    --rm `
+    --gpus all `
+    --ipc=host `
+    -v "${dataPath}:/data" `
+    -v "${configPath}:/config" `
+    -v "${artifactPath}:/project/mlruns" `
+    -v "${modelPath}:/project/outputs/runs" `
+    -it `
+    generative-brain-controlnet:1.0.0 `
+    bash
