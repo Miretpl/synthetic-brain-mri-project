@@ -33,8 +33,8 @@ def get_datalist(
     for index, row in df.iterrows():
         data_dicts.append(
             {
-                "t1w": f"{row['t1w']}",
                 "flair": f"{row['flair']}",
+                "seg": f"{row['seg']}",
                 "report": "T1-weighted image of a brain.",
             }
         )
@@ -54,57 +54,57 @@ def get_dataloader(
     # Define transformations
     val_transforms = transforms.Compose(
         [
-            transforms.LoadImaged(keys=["t1w"]),
-            transforms.EnsureChannelFirstd(keys=["t1w"]),
-            transforms.Rotate90d(keys=["t1w"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-            transforms.Flipd(keys=["t1w"], spatial_axis=1),  # Fix flipped image read
-            transforms.ScaleIntensityRanged(keys=["t1w"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
+            transforms.LoadImaged(keys=["flair"]),
+            transforms.EnsureChannelFirstd(keys=["flair"]),
+            transforms.Rotate90d(keys=["flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+            transforms.Flipd(keys=["flair"], spatial_axis=1),  # Fix flipped image read
+            transforms.ScaleIntensityRanged(keys=["flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
             ApplyTokenizerd(keys=["report"]),
-            transforms.ToTensord(keys=["t1w", "report"]),
+            transforms.ToTensord(keys=["flair", "report"]),
         ]
     )
     if model_type == "autoencoder":
         train_transforms = transforms.Compose(
             [
-                transforms.LoadImaged(keys=["t1w"]),
-                transforms.EnsureChannelFirstd(keys=["t1w"]),
-                transforms.Rotate90d(keys=["t1w"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-                transforms.Flipd(keys=["t1w"], spatial_axis=1),  # Fix flipped image read
-                transforms.ScaleIntensityRanged(keys=["t1w"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
-                transforms.RandFlipd(keys=["t1w"], prob=0.5, spatial_axis=0),
+                transforms.LoadImaged(keys=["flair"]),
+                transforms.EnsureChannelFirstd(keys=["flair"]),
+                transforms.Rotate90d(keys=["flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+                transforms.Flipd(keys=["flair"], spatial_axis=1),  # Fix flipped image read
+                transforms.ScaleIntensityRanged(keys=["flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
+                transforms.RandFlipd(keys=["flair"], prob=0.5, spatial_axis=0),
                 transforms.RandAffined(
-                    keys=["t1w"],
+                    keys=["flair"],
                     translate_range=(-2, 2),
                     scale_range=(-0.05, 0.05),
                     spatial_size=[160, 224],
                     prob=0.5,
                 ),
-                transforms.RandShiftIntensityd(keys=["t1w"], offsets=0.05, prob=0.1),
-                transforms.RandAdjustContrastd(keys=["t1w"], gamma=(0.97, 1.03), prob=0.1),
-                transforms.ThresholdIntensityd(keys=["t1w"], threshold=1, above=False, cval=1.0),
-                transforms.ThresholdIntensityd(keys=["t1w"], threshold=0, above=True, cval=0),
+                transforms.RandShiftIntensityd(keys=["flair"], offsets=0.05, prob=0.1),
+                transforms.RandAdjustContrastd(keys=["flair"], gamma=(0.97, 1.03), prob=0.1),
+                transforms.ThresholdIntensityd(keys=["flair"], threshold=1, above=False, cval=1.0),
+                transforms.ThresholdIntensityd(keys=["flair"], threshold=0, above=True, cval=0),
             ]
         )
     if model_type == "diffusion":
         train_transforms = transforms.Compose(
             [
-                transforms.LoadImaged(keys=["t1w"]),
-                transforms.EnsureChannelFirstd(keys=["t1w"]),
-                transforms.Rotate90d(keys=["t1w"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-                transforms.Flipd(keys=["t1w"], spatial_axis=1),  # Fix flipped image read
-                transforms.ScaleIntensityRanged(keys=["t1w"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
-                transforms.RandFlipd(keys=["t1w"], prob=0.5, spatial_axis=0),
+                transforms.LoadImaged(keys=["flair"]),
+                transforms.EnsureChannelFirstd(keys=["flair"]),
+                transforms.Rotate90d(keys=["flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+                transforms.Flipd(keys=["flair"], spatial_axis=1),  # Fix flipped image read
+                transforms.ScaleIntensityRanged(keys=["flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
+                transforms.RandFlipd(keys=["flair"], prob=0.5, spatial_axis=0),
                 transforms.RandAffined(
-                    keys=["t1w"],
+                    keys=["flair"],
                     translate_range=(-2, 2),
                     scale_range=(-0.01, 0.01),
                     spatial_size=[160, 224],
                     prob=0.25,
                 ),
-                transforms.RandShiftIntensityd(keys=["t1w"], offsets=0.05, prob=0.1),
-                transforms.RandAdjustContrastd(keys=["t1w"], gamma=(0.97, 1.03), prob=0.1),
-                transforms.ThresholdIntensityd(keys=["t1w"], threshold=1, above=False, cval=1.0),
-                transforms.ThresholdIntensityd(keys=["t1w"], threshold=0, above=True, cval=0),
+                transforms.RandShiftIntensityd(keys=["flair"], offsets=0.05, prob=0.1),
+                transforms.RandAdjustContrastd(keys=["flair"], gamma=(0.97, 1.03), prob=0.1),
+                transforms.ThresholdIntensityd(keys=["flair"], threshold=1, above=False, cval=1.0),
+                transforms.ThresholdIntensityd(keys=["flair"], threshold=0, above=True, cval=0),
                 ApplyTokenizerd(keys=["report"]),
                 transforms.RandLambdad(
                     keys=["report"],
@@ -118,38 +118,38 @@ def get_dataloader(
     if model_type == "controlnet":
         val_transforms = transforms.Compose(
             [
-                transforms.LoadImaged(keys=["t1w", "flair"]),
-                transforms.EnsureChannelFirstd(keys=["t1w", "flair"]),
-                transforms.Rotate90d(keys=["t1w", "flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-                transforms.Flipd(keys=["t1w", "flair"], spatial_axis=1),  # Fix flipped image read
+                transforms.LoadImaged(keys=["flair", "seg"]),
+                transforms.EnsureChannelFirstd(keys=["flair", "seg"]),
+                transforms.Rotate90d(keys=["flair", "seg"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+                transforms.Flipd(keys=["flair", "seg"], spatial_axis=1),  # Fix flipped image read
                 transforms.ScaleIntensityRanged(
-                    keys=["t1w", "flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True
+                    keys=["flair", "seg"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True
                 ),
                 ApplyTokenizerd(keys=["report"]),
-                transforms.ToTensord(keys=["t1w", "flair", "report"]),
+                transforms.ToTensord(keys=["flair", "seg", "report"]),
             ]
         )
         train_transforms = transforms.Compose(
             [
-                transforms.LoadImaged(keys=["t1w", "flair"]),
-                transforms.EnsureChannelFirstd(keys=["t1w", "flair"]),
-                transforms.Rotate90d(keys=["t1w", "flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-                transforms.Flipd(keys=["t1w", "flair"], spatial_axis=1),  # Fix flipped image read
+                transforms.LoadImaged(keys=["flair", "seg"]),
+                transforms.EnsureChannelFirstd(keys=["flair", "seg"]),
+                transforms.Rotate90d(keys=["flair", "seg"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+                transforms.Flipd(keys=["flair", "seg"], spatial_axis=1),  # Fix flipped image read
                 transforms.ScaleIntensityRanged(
-                    keys=["t1w", "flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True
+                    keys=["flair", "seg"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True
                 ),
-                transforms.RandFlipd(keys=["t1w", "flair"], prob=0.5, spatial_axis=0),
+                transforms.RandFlipd(keys=["flair", "seg"], prob=0.5, spatial_axis=0),
                 transforms.RandAffined(
-                    keys=["t1w", "flair"],
+                    keys=["flair", "seg"],
                     translate_range=(-2, 2),
                     scale_range=(-0.01, 0.01),
                     spatial_size=[160, 224],
                     prob=0.25,
                 ),
-                transforms.RandShiftIntensityd(keys=["t1w", "flair"], offsets=0.05, prob=0.1),
-                transforms.RandAdjustContrastd(keys=["t1w", "flair"], gamma=(0.97, 1.03), prob=0.1),
-                transforms.ThresholdIntensityd(keys=["t1w", "flair"], threshold=1, above=False, cval=1.0),
-                transforms.ThresholdIntensityd(keys=["t1w", "flair"], threshold=0, above=True, cval=0),
+                transforms.RandShiftIntensityd(keys=["flair", "seg"], offsets=0.05, prob=0.1),
+                transforms.RandAdjustContrastd(keys=["flair", "seg"], gamma=(0.97, 1.03), prob=0.1),
+                transforms.ThresholdIntensityd(keys=["flair", "seg"], threshold=1, above=False, cval=1.0),
+                transforms.ThresholdIntensityd(keys=["flair", "seg"], threshold=0, above=True, cval=0),
                 ApplyTokenizerd(keys=["report"]),
                 transforms.RandLambdad(
                     keys=["report"],

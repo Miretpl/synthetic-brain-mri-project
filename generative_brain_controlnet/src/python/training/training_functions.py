@@ -149,7 +149,7 @@ def train_epoch_aekl(
 
     pbar = tqdm(enumerate(loader), total=len(loader))
     for step, x in pbar:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
 
         # GENERATOR
         optimizer_g.zero_grad(set_to_none=True)
@@ -251,7 +251,7 @@ def eval_aekl(
     adv_loss = PatchAdversarialLoss(criterion="least_squares", no_activation_leastsq=True)
     total_losses = OrderedDict()
     for x in loader:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
 
         with autocast(enabled=True):
             # GENERATOR
@@ -422,7 +422,7 @@ def train_epoch_ldm(
 
     pbar = tqdm(enumerate(loader), total=len(loader))
     for step, x in pbar:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
         reports = x["report"].to(device)
         timesteps = torch.randint(0, scheduler.num_train_timesteps, (images.shape[0],), device=device).long()
 
@@ -478,7 +478,7 @@ def eval_ldm(
     total_losses = OrderedDict()
 
     for x in loader:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
         reports = x["report"].to(device)
         timesteps = torch.randint(0, scheduler.num_train_timesteps, (images.shape[0],), device=device).long()
 
@@ -638,9 +638,9 @@ def train_epoch_controlnet(
 
     pbar = tqdm(enumerate(loader), total=len(loader))
     for step, x in pbar:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
         reports = x["report"].to(device)
-        cond = x["flair"].to(device)
+        cond = x["seg"].to(device)
 
         timesteps = torch.randint(0, scheduler.num_train_timesteps, (images.shape[0],), device=device).long()
 
@@ -705,9 +705,9 @@ def eval_controlnet(
     total_losses = OrderedDict()
 
     for x in loader:
-        images = x["t1w"].to(device)
+        images = x["flair"].to(device)
         reports = x["report"].to(device)
-        cond = x["flair"].to(device)
+        cond = x["seg"].to(device)
 
         timesteps = torch.randint(0, scheduler.num_train_timesteps, (images.shape[0],), device=device).long()
 
