@@ -76,22 +76,22 @@ def main(args):
 
     # Samples
     samples_datalist = []
-    for sample_path in sorted(list(samples_dir.glob("*.png"))):
+    for sample_path in sorted(list(samples_dir.glob("**/*.png"))):
         samples_datalist.append(
             {
-                "t1w": str(sample_path),
+                "fake": str(sample_path),
             }
         )
     print(f"{len(samples_datalist)} images found in {str(samples_dir)}")
 
     sample_transforms = transforms.Compose(
         [
-            transforms.LoadImaged(keys=["t1w"]),
-            transforms.EnsureChannelFirstd(keys=["t1w"]),
-            transforms.Rotate90d(keys=["t1w"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-            transforms.Flipd(keys=["t1w"], spatial_axis=1),  # Fix flipped image read
-            transforms.ScaleIntensityRanged(keys=["t1w"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
-            transforms.ToTensord(keys=["t1w"]),
+            transforms.LoadImaged(keys=["fake"]),
+            transforms.EnsureChannelFirstd(keys=["fake"]),
+            transforms.Rotate90d(keys=["fake"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+            transforms.Flipd(keys=["fake"], spatial_axis=1),  # Fix flipped image read
+            transforms.ScaleIntensityRanged(keys=["fake"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
+            transforms.ToTensord(keys=["fake"]),
         ]
     )
 
@@ -108,7 +108,7 @@ def main(args):
 
     samples_features = []
     for batch in tqdm(samples_loader):
-        img = batch["t1w"]
+        img = batch["fake"]
         with torch.no_grad():
             outputs = get_features(img.to(device), radnet=model)
 
@@ -119,13 +119,14 @@ def main(args):
     test_loader = get_test_dataloader(
         batch_size=args.batch_size,
         test_ids=args.test_ids,
+        real_root='/data/generation',
         num_workers=args.num_workers,
         upper_limit=1000,
     )
 
     test_features = []
     for batch in tqdm(test_loader):
-        img = batch["t1w"]
+        img = batch["real"]
         with torch.no_grad():
             outputs = get_features(img.to(device), radnet=model)
 

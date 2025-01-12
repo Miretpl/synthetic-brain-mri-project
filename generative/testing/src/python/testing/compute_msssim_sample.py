@@ -11,7 +11,7 @@ import torch
 from generative.metrics import MultiScaleSSIMMetric
 from monai import transforms
 from monai.config import print_config
-from monai.data import CacheDataset
+from monai.data import Dataset
 from monai.utils import set_determinism
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -39,22 +39,22 @@ def main(args):
     for sample_path in sample_list:
         datalist.append(
             {
-                "t1w": str(sample_path),
+                "flair": str(sample_path),
             }
         )
 
     eval_transforms = transforms.Compose(
         [
-            transforms.LoadImaged(keys=["t1w"]),
-            transforms.EnsureChannelFirstd(keys=["t1w"]),
-            transforms.Rotate90d(keys=["t1w"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
-            transforms.Flipd(keys=["t1w"], spatial_axis=1),  # Fix flipped image read
-            transforms.ScaleIntensityRanged(keys=["t1w"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
-            transforms.ToTensord(keys=["t1w"]),
+            transforms.LoadImaged(keys=["flair"]),
+            transforms.EnsureChannelFirstd(keys=["flair"]),
+            transforms.Rotate90d(keys=["flair"], k=-1, spatial_axes=(0, 1)),  # Fix flipped image read
+            transforms.Flipd(keys=["flair"], spatial_axis=1),  # Fix flipped image read
+            transforms.ScaleIntensityRanged(keys=["flair"], a_min=0.0, a_max=255.0, b_min=0.0, b_max=1.0, clip=True),
+            transforms.ToTensord(keys=["flair"]),
         ]
     )
 
-    eval_ds = CacheDataset(
+    eval_ds = Dataset(
         data=datalist,
         transform=eval_transforms,
     )
@@ -65,7 +65,7 @@ def main(args):
         num_workers=args.num_workers,
     )
 
-    eval_ds_2 = CacheDataset(
+    eval_ds_2 = Dataset(
         data=datalist,
         transform=eval_transforms,
     )
@@ -83,10 +83,10 @@ def main(args):
     ms_ssim_list = []
     pbar = tqdm(enumerate(eval_loader), total=len(eval_loader))
     for step, batch in pbar:
-        img = batch["t1w"]
+        img = batch["flair"]
         for batch2 in eval_loader_2:
-            img2 = batch2["t1w"]
-            if batch["t1w_meta_dict"]["filename_or_obj"][0] == batch2["t1w_meta_dict"]["filename_or_obj"][0]:
+            img2 = batch2["flair"]
+            if batch["flair_meta_dict"]["filename_or_obj"][0] == batch2["flair_meta_dict"]["filename_or_obj"][0]:
                 continue
             ms_ssim_list.append(ms_ssim(img.to(device), img2.to(device)).item())
         pbar.update()
