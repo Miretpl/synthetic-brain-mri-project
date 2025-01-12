@@ -1,1 +1,3 @@
-# synthetic-brain-mri-project
+# Information
+
+# Data preparation for generation models
