@@ -1,3 +1,155 @@
 # Information
 
-# Data preparation for generation models
+## General information
+All content of the repository was tested on Windows 11 23H2 with Docker Desktop 4.37.1, NVIDIA GeForce RTX 3080 12GB 
+and NVIDIA Studio Driver 566.36.
+
+Below there are descriptions regarding every part of the work:
+1. Data preparation for generative models - focuses on preparing data for generative model training,
+2. Generative model - focuses on proposed and ControlNet model training and evaluation
+
+All sections are separate from each other which means that when there is command execution it should be done from root 
+repository directory.
+
+## Data preparation for generative models
+To run scripts for data preparation you need to execute below commands:
+1. Move to dataset directory
+   ```shell
+   cd ./dataset
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   ./run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelsPath "C:\Users\$env:USERNAME\Desktop\models"
+   ```
+   where you need to create `data` and `models` directories. Under `data` directory you will have `raw` directory 
+   created with `BraTS2021_Training_Data.tar` file downloaded and unpacked from 
+   [BraTS2021](https://www.kaggle.com/datasets/dschettler8845/brats-2021-task1) website
+3. After finished data preparation there will be couple new directories created:
+   1. /data/raw/extracted - there are raw data which was extracted from nii.gz files to png
+   2. /data/metadata/dataset - there are some information regarding generated data
+   3. /data/ids/raw - there are files with information about which patient data belongs to which set group: train, validation or test
+
+## Generative model
+### Proposed - training
+To train proposed model you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./generative/custom
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\custom'
+   ```
+   where you need to create `generation/custom` directory under `models`.
+3. Model training (running script instead docker container)
+   ```shell
+   ./src/bash/training/01_training.sh
+   ```
+4. Result generation for reconstruction analysis (when we have our final model ready)
+   ```shell
+   ./src/bash/generation/01_reconstruction.sh
+   ```
+   before running script you need to provide proper `--run_id` value (if it is the last run it will be the newest name 
+   of the directory under `/models/generation/custom/runs` in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\custom\runs` in local).
+5. Result generation for diversity analysis (when we have our final model ready)
+   ```shell
+   ./src/bash/generation/02_diversity.sh
+   ```
+   before running script you need to provide proper `--run_id` value (if it is the last run it will be the newest name 
+   of the directory under `/models/generation/custom/runs` in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\custom\runs` in local). By default, for diversity test there will 
+   be 1000 images generated. If you want to change that number you can modify value of `--img_to_gen_per_seg_map` 
+   parameter inside the script.
+
+### ControlNet - training
+To train ControlNet model you need to execute below commands:
+1. Move to ControlNet model directory
+   ```shell
+   cd ./generative/generative_brain_controlnet
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -configPath "C:\Users\$env:USERNAME\Desktop\synthetic-brain-mri-project\generative\generative_brain_controlnet\configs" `
+      -artifactPath "C:\Users\$env:USERNAME\Desktop\models\generation\controlnet\artifacts" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\controlnet\runs" `
+      -resultPath "C:\Users\$env:USERNAME\Desktop\models\generation\controlnet\results"
+   ```
+   where you need to create `generation/controlnet` directory under `models`. Under newly created `controlnet` directory
+   you need to create also `artifacts`, `runs` and `results` directories. Also, below command will work if the content 
+   of this repository will be cloned under `C:\Users\$env:USERNAME\Desktop` path.
+3. Model training - autoencoder (running script instead docker container)
+   ```shell
+   ./src/bash/training/01_train_aekl.sh
+   ```
+4. Model training - diffusion model (running script instead docker container)
+   ```shell
+   ./src/bash/training/02_train_ldm.sh
+   ```
+   where inside the script you need to update `mlrun_id` parameter with run_id which was printed out in console during
+   autoencoder training.
+5. Model training - ControlNet (running script instead docker container)
+   ```shell
+   ./src/bash/training/03_train_controlnet.sh
+   ```
+   where inside the script you need to update `stage1_mlrun_id` (autoencoder) and `ldm_mlrun_id` (diffusion model) 
+   parameters with run_id values printed during training of autoencoder and diffusion model.
+6. Conversion of MLFlow models to PyTorch (when we have our final model ready)
+   ```shell
+   ./src/bash/training/04_convert_mlflow_to_pytorch.sh
+   ```
+   where inside the script you need to update `stage1_mlrun_id` (autoencoder), `ldm_mlrun_id` (diffusion model) and 
+   `controlnet_mlrun_id` (ControlNet) parameters with run_id values printed during training of autoencoder, diffusion 
+   and ControlNet model.
+7. Result generation for reconstruction analysis (when we have our final model ready)
+   ```shell
+   ./src/bash/generation/01_reconstruction.sh
+   ```
+8. Result generation for diversity analysis (when we have our final model ready)
+   ```shell
+   ./src/bash/generation/02_diversity.sh
+   ```
+
+### Model evaluation
+To run proposed and ControlNet models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
+commands:
+1. Move to testing directory
+   ```shell
+   cd ./generative/testing
+   ```
+2. Run PowerShell command (build and run docker container)
+   ```shell
+   ./run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelsGenPath "C:\Users\$env:USERNAME\Desktop\models\generation"
+   ```
+3. Run below command to generate MS-SSIM (reconstruction) for proposed model
+   ```shell
+   ./src/bash/testing/custom/01_reconstruction_ms-ssim.sh
+   ```
+4. Run below command to generate FID (reconstruction) for proposed model
+   ```shell
+   ./src/bash/testing/custom/01_reconstruction_fid.sh
+   ```
+5. Run below command to generate MS-SSIM (diversity) for proposed model
+   ```shell
+   ./src/bash/testing/custom/03_diversity_ms-ssim.sh
+   ```
+6. Run below command to generate MS-SSIM (reconstruction) for ControlNet model
+   ```shell
+   ./src/bash/testing/controlnet/01_reconstruction_ms-ssim.sh
+   ```
+7. Run below command to generate FID (reconstruction) for ControlNet model
+   ```shell
+   ./src/bash/testing/controlnet/01_reconstruction_fid.sh
+   ```
+8. Run below command to generate MS-SSIM (diversity) for ControlNet model
+   ```shell
+   ./src/bash/testing/controlnet/03_diversity_ms-ssim.sh
+   ```
