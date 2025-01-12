@@ -6,7 +6,7 @@ param(
 )
 
 Write-Host "Docker image - build"
-docker build -t generative-brain-controlnet:1.0.0 -f ./docker/Dockerfile .
+docker build -t synthetic-brain-mri:controlnet-1.0.0 -f ./docker/Dockerfile .
 
 Write-Host "Docker image - run"
 docker run `
@@ -18,5 +18,5 @@ docker run `
     -v "${artifactPath}:/project/mlruns" `
     -v "${modelPath}:/project/outputs/runs" `
     -it `
-    generative-brain-controlnet:1.0.0 `
+    synthetic-brain-mri:controlnet-1.0.0 `
     bash
