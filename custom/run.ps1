@@ -13,4 +13,6 @@ docker run `
     --ipc=host `
     -v "${dataPath}:/data" `
     -v "${modelPath}:/models" `
-    synthetic-brain-mri:custom-1.0.0
+    -it `
+    synthetic-brain-mri:custom-1.0.0 `
+    bash

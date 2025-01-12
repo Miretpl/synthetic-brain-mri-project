@@ -8,4 +8,3 @@ ENV COMET_WORKSPACE=''
 ENV COMET_API_KEY=''
 
 COPY src src
-CMD python src/training.py

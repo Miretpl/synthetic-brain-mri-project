@@ -36,6 +36,7 @@ class ExperimentConfig:
     test_ids = 'test.tsv'
     run_id = attempt
     results_dir = f'{MODELS_ROOT}/{attempt:02d}'
+    results_dir_root = MODELS_ROOT
     num_train_timesteps = 2000
     model_eval_epochs = 50
     model_val_epochs = 5
