@@ -11,3 +11,4 @@ RUN pip3 install -r requirements.txt \
     && rm requirements.txt
 
 COPY src src
+COPY docker/checkpoints/RadImageNet-ResNet50_notop.pth /project/outputs/torch_home/hub/checkpoints/RadImageNet-ResNet50_notop.pth
