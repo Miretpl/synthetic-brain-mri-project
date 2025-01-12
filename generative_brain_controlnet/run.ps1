@@ -2,7 +2,8 @@ param(
     [String]$dataPath,
     [String]$configPath,
     [String]$artifactPath,
-    [String]$modelPath
+    [String]$modelPath,
+    [String]$resultPath
 )
 
 Write-Host "Docker image - build"
@@ -17,6 +18,7 @@ docker run `
     -v "${configPath}:/config" `
     -v "${artifactPath}:/project/mlruns" `
     -v "${modelPath}:/project/outputs/runs" `
+    -v "${resultPath}:/results" `
     -it `
     synthetic-brain-mri:controlnet-1.0.0 `
     bash
