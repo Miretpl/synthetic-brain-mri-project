@@ -1,0 +1,14 @@
+black==23.11.0
+gdown==4.7.1
+isort==5.12.0
+lpips==0.1.4
+monai-generative==0.2.2
+monai[nibabel, pillow, matplotlib, pandas, mlflow, tqdm]==1.2.0
+numpy==1.22.2
+omegaconf==2.3.0
+pre-commit==3.5.0
+protobuf==3.20.3
+pynvml==11.4.1
+spacy==3.5.2
+tensorboardX==2.6.2.2
+transformers[torch]==4.30.2
