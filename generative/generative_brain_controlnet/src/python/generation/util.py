@@ -9,6 +9,24 @@ from monai.data import Dataset
 from torch.utils.data import DataLoader
 
 
+def get_raw_dataloader(
+        batch_size: int,
+        ids: str,
+        num_workers: int = 8
+):
+    dicts = get_datalist(ids_path=ids)
+    ds = Dataset(data=dicts)
+    return DataLoader(
+        ds,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+        drop_last=False,
+        pin_memory=False,
+        persistent_workers=True,
+    )
+
+
 def get_test_dataloader(
     batch_size: int,
     test_ids: Optional[str],
@@ -46,7 +64,7 @@ def get_test_dataloader(
 
 def get_datalist(
     ids_path: Optional[str],
-    root_path: str,
+    root_path: Optional[str] = None,
     upper_limit: int | None = None,
 ):
     """Get data dicts for data loaders."""
@@ -63,14 +81,23 @@ def get_datalist(
             df = df[:upper_limit]
 
         data_dicts = []
-        for index, row in df.iterrows():
-            data_dicts.append(
-                {
-                    "flair": f'{root_path}/{row["flair"]}',
-                    "seg": f'{root_path}/{row["seg"]}',
-                    "report": "T1-weighted image of a brain.",
-                }
-            )
+        if root_path is not None:
+            for index, row in df.iterrows():
+                data_dicts.append(
+                    {
+                        "flair": f'{root_path}/{row["flair"]}',
+                        "seg": f'{root_path}/{row["seg"]}',
+                        "report": "T1-weighted image of a brain.",
+                    }
+                )
+        else:
+            for index, row in df.iterrows():
+                data_dicts.append(
+                    {
+                        "flair": row["flair"],
+                        "seg": row["seg"]
+                    }
+                )
 
     print(f"Found {len(data_dicts)} subjects.")
     return data_dicts
