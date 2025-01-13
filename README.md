@@ -6,7 +6,9 @@ and NVIDIA Studio Driver 566.36.
 
 Below there are descriptions regarding every part of the work:
 1. Data preparation for generative models - focuses on preparing data for generative model training,
-2. Generative model - focuses on proposed and ControlNet model training and evaluation
+2. Generative model - focuses on proposed and ControlNet model training, data generation for evaluation and segmentation
+   model
+3. Model evaluation - focuses on calculation of evaluation scores for generative models
 
 All sections are separate from each other which means that when there is command execution it should be done from root 
 repository directory.
@@ -32,7 +34,8 @@ To run scripts for data preparation you need to execute below commands:
    3. /data/ids/raw - there are files with information about which patient data belongs to which set group: train, validation or test
 
 ## Generative model
-### Proposed - training
+### Training
+#### Proposed model
 To train proposed model you need to execute below commands:
 1. Move to custom model directory
    ```shell
@@ -49,24 +52,35 @@ To train proposed model you need to execute below commands:
    ```shell
    ./src/bash/training/01_training.sh
    ```
-4. Result generation for reconstruction analysis (when we have our final model ready)
+
+When we will have our final model ready we can start to evaluation and generation of data for segmentation model (all
+command should be executed in previously created docker container):
+1. Data generation for reconstruction analysis
    ```shell
-   ./src/bash/generation/01_reconstruction.sh
+   ./src/bash/generation/test/01_reconstruction.sh
    ```
    before running script you need to provide proper `--run_id` value (if it is the last run it will be the newest name 
    of the directory under `/models/generation/custom/runs` in docker container or 
    `C:\Users\$env:USERNAME\Desktop\models\generation\custom\runs` in local).
-5. Result generation for diversity analysis (when we have our final model ready)
+2. Data generation for diversity analysis
    ```shell
-   ./src/bash/generation/02_diversity.sh
+   ./src/bash/generation/test/02_diversity.sh
    ```
    before running script you need to provide proper `--run_id` value (if it is the last run it will be the newest name 
    of the directory under `/models/generation/custom/runs` in docker container or 
    `C:\Users\$env:USERNAME\Desktop\models\generation\custom\runs` in local). By default, for diversity test there will 
    be 1000 images generated. If you want to change that number you can modify value of `--img_to_gen_per_seg_map` 
    parameter inside the script.
+3. Data generation for segmentation model
+   ```shell
+   ./src/bash/generation/seg/01_whole_train_set.sh
+   ```
+4. Copy segmentation maps for segmentation model
+   ```shell
+   ./src/bash/generation/seg/02_copy_seg_masks.sh
+   ```
 
-### ControlNet - training
+#### ControlNet model
 To train ControlNet model you need to execute below commands:
 1. Move to ControlNet model directory
    ```shell
@@ -84,36 +98,47 @@ To train ControlNet model you need to execute below commands:
    where you need to create `generation/controlnet` directory under `models`. Under newly created `controlnet` directory
    you need to create also `artifacts`, `runs` and `results` directories. Also, below command will work if the content 
    of this repository will be cloned under `C:\Users\$env:USERNAME\Desktop` path.
-3. Model training - autoencoder (running script instead docker container)
+3. Model training - autoencoder
    ```shell
    ./src/bash/training/01_train_aekl.sh
    ```
-4. Model training - diffusion model (running script instead docker container)
+4. Model training - diffusion model
    ```shell
    ./src/bash/training/02_train_ldm.sh
    ```
    where inside the script you need to update `mlrun_id` parameter with run_id which was printed out in console during
    autoencoder training.
-5. Model training - ControlNet (running script instead docker container)
+5. Model training - ControlNet
    ```shell
    ./src/bash/training/03_train_controlnet.sh
    ```
    where inside the script you need to update `stage1_mlrun_id` (autoencoder) and `ldm_mlrun_id` (diffusion model) 
    parameters with run_id values printed during training of autoencoder and diffusion model.
-6. Conversion of MLFlow models to PyTorch (when we have our final model ready)
+
+When we will have our final model ready we can start to evaluation and generation of data for segmentation model (all
+command should be executed in previously created docker container):
+1. Conversion of MLFlow models to PyTorch
    ```shell
    ./src/bash/training/04_convert_mlflow_to_pytorch.sh
    ```
    where inside the script you need to update `stage1_mlrun_id` (autoencoder), `ldm_mlrun_id` (diffusion model) and 
    `controlnet_mlrun_id` (ControlNet) parameters with run_id values printed during training of autoencoder, diffusion 
    and ControlNet model.
-7. Result generation for reconstruction analysis (when we have our final model ready)
+2. Data generation for reconstruction analysis
    ```shell
-   ./src/bash/generation/01_reconstruction.sh
+   ./src/bash/generation/test/01_reconstruction.sh
    ```
-8. Result generation for diversity analysis (when we have our final model ready)
+3. Data generation for diversity analysis
    ```shell
-   ./src/bash/generation/02_diversity.sh
+   ./src/bash/generation/test/02_diversity.sh
+   ```
+4. Data generation for segmentation model
+   ```shell
+   ./src/bash/generation/seg/01_whole_train_set.sh
+   ```
+5. Copy segmentation maps for segmentation model
+   ```shell
+   ./src/bash/generation/seg/02_copy_seg_masks.sh
    ```
 
 ### Model evaluation
