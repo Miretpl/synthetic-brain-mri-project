@@ -16,6 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--run_id", type=int, help="Run ID")
 parser.add_argument("--img_to_gen_per_seg_map", type=int, default=1, help="")
 parser.add_argument("--output_dir", help="Path to output directory")
+parser.add_argument("--ids_name", help="Filename of ids tsv file")
 args = parser.parse_args()
 
 accelerator = Accelerator(
@@ -38,7 +39,7 @@ model.enable_xformers_memory_efficient_attention()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-data_loader = get_result_datasets(config=config, img_per_seg_map=args.img_to_gen_per_seg_map)
+data_loader = get_result_datasets(config=config, ids=args.ids_name, img_per_seg_map=args.img_to_gen_per_seg_map)
 
 model, data_loader = accelerator.prepare(model, data_loader, device_placement=[device, device])
 pipeline = create_pipeline(

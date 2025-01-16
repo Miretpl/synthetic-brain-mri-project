@@ -4,7 +4,7 @@ param(
 )
 
 Write-Host "Docker image - build"
-docker build . -f dataset/docker/Dockerfile -t synthetic-brain-mri:dataset-1.0.0
+docker build . -f docker/Dockerfile -t synthetic-brain-mri:dataset-1.0.0
 
 Write-Host "Docker image - run"
 docker run `

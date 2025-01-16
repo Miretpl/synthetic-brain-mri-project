@@ -1,4 +1,5 @@
 from os.path import join
+from typing import Optional
 
 import pandas as pd
 from monai import transforms
@@ -9,7 +10,9 @@ from torch.utils.data import DataLoader
 from utils.config.config import ExperimentConfig
 
 
-def __get_datalist(ids_path: str, data_path: str, filename: str, diversity: bool = False) -> list[dict]:
+def __get_datalist(
+        ids_path: str, filename: str, data_path: Optional[str] = None, diversity: bool = False
+) -> list[dict]:
     if diversity:
         data_dicts = [{
             "flair": f'{data_path}/01045/03_flair_unhealthy.png',
@@ -18,13 +21,22 @@ def __get_datalist(ids_path: str, data_path: str, filename: str, diversity: bool
     else:
         df = pd.read_csv(join(ids_path, filename), sep='\t')
 
-        data_dicts = [
-            {
-                'flair': join(data_path, row['flair']),
-                'seg': join(data_path, row['seg'])
-            }
-            for index, row in df.iterrows()
-        ]
+        if data_path is not None:
+            data_dicts = [
+                {
+                    'flair': join(data_path, row['flair']),
+                    'seg': join(data_path, row['seg'])
+                }
+                for index, row in df.iterrows()
+            ]
+        else:
+            data_dicts = [
+                {
+                    'flair': row['flair'],
+                    'seg': row['seg']
+                }
+                for index, row in df.iterrows()
+            ]
 
     print(f'Found {len(data_dicts)} subjects')
     return data_dicts
@@ -102,7 +114,7 @@ def get_datasets(config: ExperimentConfig) -> tuple[DataLoader, DataLoader, Data
     return train_loader, val_loader, test_loader
 
 
-def get_result_datasets(config: ExperimentConfig, img_per_seg_map: int) -> DataLoader:
+def get_result_datasets(config: ExperimentConfig, ids: str, img_per_seg_map: int) -> DataLoader:
     transform = transforms.Compose([
         transforms.LoadImaged(keys=['seg']),
         transforms.EnsureChannelFirstd(keys=['seg']),
@@ -114,7 +126,7 @@ def get_result_datasets(config: ExperimentConfig, img_per_seg_map: int) -> DataL
         data=__get_datalist(
             ids_path=config.dataset_ids_path,
             data_path=config.dataset_root_path,
-            filename=config.test_ids,
+            filename=ids,
             diversity=True if img_per_seg_map > 1 else False
         ),
         transform=transform
@@ -123,6 +135,25 @@ def get_result_datasets(config: ExperimentConfig, img_per_seg_map: int) -> DataL
     return DataLoader(
         ds,
         batch_size=config.gen_batch_size,
+        shuffle=True,
+        num_workers=config.num_workers,
+        drop_last=False,
+        pin_memory=False,
+        persistent_workers=True
+    )
+
+
+def get_raw_dataloader(config: ExperimentConfig, ids: str) -> DataLoader:
+    ds = Dataset(
+        data=__get_datalist(
+            ids_path=config.dataset_ids_path,
+            filename=ids
+        )
+    )
+
+    return DataLoader(
+        ds,
+        batch_size=1,
         shuffle=True,
         num_workers=config.num_workers,
         drop_last=False,
