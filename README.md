@@ -1,11 +1,16 @@
 # Information
 
 ## General information
-All content of the repository was tested on Windows 11 23H2 with Docker Desktop 4.37.1, NVIDIA GeForce RTX 3080 12GB 
-and NVIDIA Studio Driver 566.36.
+All content of the repository was tested on Windows 11 23H2 with Docker Desktop 4.37.1 and NVIDIA Studio Driver 566.36.
+Computer configuration is listed in the table below:
+
+| Graphic card                 | Memory | CPU               |
+|------------------------------|--------|-------------------|
+| NVIDIA GeForce RTX 3080 12GB | 64 GB  | AMD Ryzen 7 5800X |
 
 Below there are descriptions regarding every part of the work:
-1. Data preparation for generative models - focuses on preparing data for generative model training,
+1. Data preparation - focuses on preparing data for generative model training and creating sets of ids for generative 
+   and segmentation model training,
 2. Generative model - focuses on proposed and ControlNet model training, data generation for evaluation and segmentation
    model
 3. Model evaluation - focuses on calculation of evaluation scores for generative models
@@ -13,7 +18,7 @@ Below there are descriptions regarding every part of the work:
 All sections are separate from each other which means that when there is command execution it should be done from root 
 repository directory.
 
-## Data preparation for generative models
+## Data preparation
 To run scripts for data preparation you need to execute below commands:
 1. Move to dataset directory
    ```shell
