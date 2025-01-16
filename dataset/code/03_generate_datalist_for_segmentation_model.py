@@ -53,8 +53,6 @@ def __generate_raw_gen_datalist(data: defaultdict, quantity_of_gen_img: int) -> 
                 replace=False
             )
 
-            print(idxes)
-
             for idx in idxes:
                 result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=False))
 
