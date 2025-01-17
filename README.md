@@ -195,5 +195,28 @@ To train segmentation model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation'
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
+   ```
+3. Start training of segmentation model
+   ```shell
+   ./bash/01_training.sh
+   ```
+
+### Evaluation
+To evaluate segmentation models you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./segmentation
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
+   ```
+3. Start training of segmentation model
+   ```shell
+   ./bash/02_evaluation.sh
    ```
