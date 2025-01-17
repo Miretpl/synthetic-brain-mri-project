@@ -50,7 +50,7 @@ To train proposed model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\custom'
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\custom"
    ```
    where you need to create `generation/custom` directory under `models`.
 3. Model training (running script instead docker container)
