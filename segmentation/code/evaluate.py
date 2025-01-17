@@ -133,16 +133,20 @@ def save_predictions(data: torch.utils.data.DataLoader, model: torch.nn.Module, 
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--runs_dir", help="Localisation of run directory.")
-parser.add_argument("--epoch_number", type=int, help="Number of epoch from which model will be retrieved.")
+parser.add_argument(
+    "--epoch_number",
+    type=int,
+    default=100,
+    help="Number of epoch from which model will be retrieved."
+)
 parser.add_argument("--results_dir", help="Localisation of results directory.")
-parser.add_argument("--ids", help="Location of file with test ids.")
 parser.add_argument("--batch_size", type=int, default=16, help="Batch size.")
 
 args = parser.parse_args()
 
 test_set = get_data_loader(
     data=get_datalist(
-        ids=args.ids,
+        ids="/data/ids/raw/test.tsv",
         real_data_root_path="/data/raw/extracted",
     ),
     transforms=transforms.Compose([
