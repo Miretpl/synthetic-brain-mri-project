@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pandas as pd
 from PIL import Image
 import torch
@@ -7,16 +9,20 @@ from torchvision import transforms
 from vars import NUM_CLASSES
 
 
-def get_datalist(ids: str, real_data_root_path: str, fake_data_root_path: str) -> list[dict]:
+def get_datalist(ids: str, real_data_root_path: str, fake_data_root_path: Optional[str] = None) -> list[dict]:
     df = pd.read_csv(ids, sep="\t")
 
     data_dicts = [
         {
             'flair': f'{real_data_root_path}/{row["flair"]}',
-            'seg': f'{real_data_root_path}/{row["seg"]}'
+            'seg': f'{real_data_root_path}/{row["seg"]}',
+            'status': row['status'],
+            'raw_flair': row['flair']
         } if fake_data_root_path is None or row['is_real'] else {
             'flair': f'{fake_data_root_path}/{row["flair"]}',
-            'seg': f'{fake_data_root_path}/{row["seg"]}'
+            'seg': f'{fake_data_root_path}/{row["seg"]}',
+            'status': row['status'],
+            'raw_flair': row['flair']
         }
         for _, row in df.iterrows()
     ]
@@ -28,7 +34,7 @@ def get_datalist(ids: str, real_data_root_path: str, fake_data_root_path: str) -
 def get_data_loader(
         data: list[dict], transforms: transforms.Compose, batch_size: int, evaluation: bool = False
 ) -> torch.utils.data.DataLoader:
-    data = SegDataset(data=data, transform=transforms)
+    data = SegDataset(data=data, transform=transforms, evaluation=evaluation)
     return torch.utils.data.DataLoader(
         data,
         batch_size=batch_size,
@@ -38,9 +44,11 @@ def get_data_loader(
 
 
 class SegDataset(Dataset):
-    def __init__(self, data: list[dict], transform: transforms.Compose) -> None:
-        self.transform = transform
+    def __init__(self, data: list[dict], transform: transforms.Compose, evaluation: bool) -> None:
         self.data = data
+        self.transform = transform
+        self.evaluation = evaluation
+
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def __len__(self) -> int:
@@ -60,5 +68,11 @@ class SegDataset(Dataset):
 
         x = x.to(self.device)
         y = torch.ceil(y.to(self.device) * NUM_CLASSES).to(torch.long)
+
+        if self.evaluation:
+            return (
+                x, torch.where(y == NUM_CLASSES, NUM_CLASSES - 1, y),
+                self.data[index]['status'], self.data[index]['raw_flair']
+            )
 
         return x, torch.where(y == NUM_CLASSES, NUM_CLASSES - 1, y)
