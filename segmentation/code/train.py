@@ -129,7 +129,7 @@ torch.save(
     obj={
         'model_state_dict': unet.state_dict(),
         'optim_state_dict': optimizer.state_dict(),
-        'epoch': e,
+        'epoch': args.epochs,
         'loss_values': loss_values
     },
     f=f'{output_path}/model.pth',
