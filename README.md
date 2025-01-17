@@ -11,9 +11,9 @@ Computer configuration is listed in the table below:
 Below there are descriptions regarding every part of the work:
 1. Data preparation - focuses on preparing data for generative model training and creating sets of ids for generative 
    and segmentation model training,
-2. Generative model - focuses on proposed and ControlNet model training, data generation for evaluation and segmentation
-   model
-3. Model evaluation - focuses on calculation of evaluation scores for generative models
+2. Generative models - focuses on proposed and ControlNet model training, data generation for evaluation and segmentation
+   model, and evaluation of generative models
+3. Segmentation model - focuses on segmentation model training
 
 All sections are separate from each other which means that when there is command execution it should be done from root 
 repository directory.
@@ -38,7 +38,7 @@ To run scripts for data preparation you need to execute below commands:
    2. /data/metadata/dataset - there are some information regarding generated data
    3. /data/ids/raw - there are files with information about which patient data belongs to which set group: train, validation or test
 
-## Generative model
+## Generative models
 ### Training
 #### Proposed model
 To train proposed model you need to execute below commands:
@@ -50,7 +50,7 @@ To train proposed model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\custom'
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\custom"
    ```
    where you need to create `generation/custom` directory under `models`.
 3. Model training (running script instead docker container)
@@ -182,4 +182,41 @@ commands:
 8. Run below command to generate MS-SSIM (diversity) for ControlNet model
    ```shell
    ./src/bash/testing/controlnet/03_diversity_ms-ssim.sh
+   ```
+
+## Segmentation model
+### Training
+To train segmentation model you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./segmentation
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
+   ```
+3. Start training of segmentation model
+   ```shell
+   ./bash/01_training.sh
+   ```
+
+### Evaluation
+To evaluate segmentation models you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./segmentation
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
+   ```
+3. Start training of segmentation model
+   ```shell
+   ./bash/02_evaluation.sh
    ```

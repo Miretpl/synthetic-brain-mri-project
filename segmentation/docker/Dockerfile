@@ -5,7 +5,5 @@ COPY docker/requirements.txt requirements.txt
 RUN pip install -r requirements.txt \
     && rm requirements.txt
 
-ENV COMET_WORKSPACE=''
-ENV COMET_API_KEY=''
-
-COPY src src
+COPY code code
+COPY docker/bash bash
