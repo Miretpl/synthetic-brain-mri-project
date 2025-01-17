@@ -7,24 +7,24 @@ python ./code/train.py \
   --real_data_path="/data/raw/extracted"
 
 python ./code/train.py \
-  --output_dir="/models/exp_01/custom/mixed/runs" \
+  --output_dir="/models/exp_01/mixed/custom/runs" \
   --train_ids="/data/ids/segmentation/big/mixed/train.tsv" \
   --real_data_path="/data/raw/extracted" \
   --fake_data_path="/data/segmentation/custom"
 
 python ./code/train.py \
-  --output_dir="/models/exp_01/controlnet/mixed/runs" \
+  --output_dir="/models/exp_01/mixed/controlnet/runs" \
   --train_ids="/data/ids/segmentation/big/mixed/train.tsv" \
   --real_data_path="/data/raw/extracted" \
   --fake_data_path="/data/segmentation/controlnet"
 
 python ./code/train.py \
-  --output_dir="/models/exp_01/custom/synthetic/runs" \
+  --output_dir="/models/exp_01/synthetic/custom/runs" \
   --train_ids="/data/ids/raw/train.tsv" \
   --real_data_path="/data/segmentation/custom"
 
 python ./code/train.py \
-  --output_dir="/models/exp_01/controlnet/synthetic/runs" \
+  --output_dir="/models/exp_01/synthetic/controlnet/runs" \
   --train_ids="/data/ids/raw/train.tsv" \
   --real_data_path="/data/segmentation/controlnet"
 
