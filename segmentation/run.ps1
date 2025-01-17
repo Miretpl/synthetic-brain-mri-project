@@ -1,6 +1,7 @@
 param(
     [String]$dataPath,
-    [String]$modelsPath
+    [String]$modelsPath,
+    [String]$resultsPath
 )
 
 Write-Host "Docker image - build"
@@ -13,6 +14,7 @@ docker run `
     --ipc=host `
     -v "${dataPath}:/data" `
     -v "${modelsPath}:/models" `
+    -v "${resultsPath}:/results" `
     -it `
     synthetic-brain-mri:segmentation-1.0.0 `
     bash
