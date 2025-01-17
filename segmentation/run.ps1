@@ -13,4 +13,6 @@ docker run `
     --ipc=host `
     -v "${dataPath}:/data" `
     -v "${modelsPath}:/models" `
-    synthetic-brain-mri:segmentation-1.0.0
+    -it `
+    synthetic-brain-mri:segmentation-1.0.0 `
+    bash

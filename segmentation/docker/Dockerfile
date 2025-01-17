@@ -6,5 +6,4 @@ RUN pip install -r requirements.txt \
     && rm requirements.txt
 
 COPY code code
-COPY docker/run.sh run.sh
-CMD ./run.sh
+COPY docker/bash bash
