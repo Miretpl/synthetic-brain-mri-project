@@ -13,7 +13,7 @@ from model import UNET
 
 from datasets import get_datalist, get_data_loader
 from loss import dice_loss, focal_loss
-from vars import NUM_CLASSES
+from vars import NUM_CLASSES, IMAGE_HEIGHT, IMAGE_WIDTH
 
 
 def train_function(
@@ -49,15 +49,11 @@ def train_function(
     return loss.item()
 
 
-train_transforms = transforms.Compose([
-    transforms.Resize((160, 224))
-])
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--output_dir", help="Model output directory.")
-parser.add_argument("--train_ids", help="Location of file with test ids.")
-parser.add_argument("--real_data_path", help="Location of file with test ids.")
-parser.add_argument("--fake_data_path", default=None, help="Location of file with test ids.")
+parser.add_argument("--train_ids", help="Location of file with train ids.")
+parser.add_argument("--real_data_path", help="Location of real data.")
+parser.add_argument("--fake_data_path", default=None, help="Location of fake data.")
 parser.add_argument("--batch_size", type=int, default=16, help="Batch size.")
 parser.add_argument("--epochs", type=int, default=100, help="Number of epochs.")
 parser.add_argument(
@@ -85,7 +81,9 @@ train_set = get_data_loader(
         real_data_root_path=args.real_data_path,
         fake_data_root_path=args.fake_data_path,
     ),
-    transforms=train_transforms,
+    transforms=transforms.Compose([
+        transforms.Resize((IMAGE_HEIGHT, IMAGE_WIDTH))
+    ]),
     batch_size=args.batch_size
 )
 
