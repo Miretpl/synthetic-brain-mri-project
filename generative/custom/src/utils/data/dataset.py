@@ -15,9 +15,9 @@ def __get_datalist(
 ) -> list[dict]:
     if diversity:
         data_dicts = [{
-            "flair": f'{data_path}/01045/03_flair_unhealthy.png',
-            "seg": f'{data_path}/01045/03_flair_unhealthy.png'
-        }]
+            'flair': f'{data_path}/01045/03_flair_unhealthy_{idx}.png',  # This will be used as path for saving image
+            'seg': f'{data_path}/01045/03_seg_unhealthy.png'
+        } for idx in range(1000)]
     else:
         df = pd.read_csv(join(ids_path, filename), sep='\t')
 
@@ -114,7 +114,7 @@ def get_datasets(config: ExperimentConfig) -> tuple[DataLoader, DataLoader, Data
     return train_loader, val_loader, test_loader
 
 
-def get_result_datasets(config: ExperimentConfig, ids: str, img_per_seg_map: int) -> DataLoader:
+def get_result_datasets(config: ExperimentConfig, ids: str, diversity: bool) -> DataLoader:
     transform = transforms.Compose([
         transforms.LoadImaged(keys=['seg']),
         transforms.EnsureChannelFirstd(keys=['seg']),
@@ -127,7 +127,7 @@ def get_result_datasets(config: ExperimentConfig, ids: str, img_per_seg_map: int
             ids_path=config.dataset_ids_path,
             data_path=config.dataset_root_path,
             filename=ids,
-            diversity=True if img_per_seg_map > 1 else False
+            diversity=diversity
         ),
         transform=transform
     )
