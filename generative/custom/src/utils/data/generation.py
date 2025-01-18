@@ -19,10 +19,10 @@ def generate_img(pipeline: CustomDDPMPipeline, seed: int, data_loader: DataLoade
             generator=torch.manual_seed(seed + idx)
         ).images
 
-        result = []
-        for img in images:
-            result.append((np.interp(img, (img.min(), img.max()), (0, +1)) * 255).astype(np.uint8))
-        result = np.array(result)
+        result = np.array([
+            (np.interp(img, (img.min(), img.max()), (0, +1)) * 255).astype(np.uint8)
+            for img in images
+        ])
 
         for i, img in enumerate(result):
             path = join(output_dir, '/'.join(batch['flair'][i].split('/')[-2:]))
