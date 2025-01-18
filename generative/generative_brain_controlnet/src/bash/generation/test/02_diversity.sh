@@ -13,5 +13,4 @@ python /workspace/src/python/generation/dataset.py \
   --x_size=20 \
   --y_size=28 \
   --num_workers=8 \
-  --scale_factor=0.3 \
-  --img_to_gen_per_seg_map=1000
+  --scale_factor=0.3

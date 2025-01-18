@@ -70,10 +70,9 @@ def get_datalist(
     """Get data dicts for data loaders."""
     if ids_path is None:
         data_dicts = [{
-            "flair": f'{root_path}/01045/03_flair_unhealthy.png',
-            "seg": f'{root_path}/01045/03_flair_unhealthy.png',
-            "report": "T1-weighted image of a brain.",
-        }]
+            "flair": f'{root_path}/01045/03_flair_unhealthy_{idx}.png',
+            "seg": f'{root_path}/01045/03_seg_unhealthy.png'
+        } for idx in range(1000)]
     else:
         df = pd.read_csv(ids_path, sep="\t")
 
