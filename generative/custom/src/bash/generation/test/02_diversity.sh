@@ -2,6 +2,4 @@
 
 python src/generation.py \
   --run_id=39 \
-  --output_dir="/models/results/diversity" \
-  --ids_name="test.tsv" \
-  --diversity
+  --output_dir="/models/results/diversity"

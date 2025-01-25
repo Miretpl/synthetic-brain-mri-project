@@ -10,10 +10,8 @@ from torch.utils.data import DataLoader
 from utils.config.config import ExperimentConfig
 
 
-def __get_datalist(
-        ids_path: str, filename: str, data_path: Optional[str] = None, diversity: bool = False
-) -> list[dict]:
-    if diversity:
+def __get_datalist(ids_path: str, filename: Optional[str], data_path: Optional[str] = None) -> list[dict]:
+    if filename is None:
         data_dicts = [{
             'flair': f'{data_path}/01045/03_flair_unhealthy_{idx}.png',  # This will be used as path for saving image
             'seg': f'{data_path}/01045/03_seg_unhealthy.png'
@@ -114,7 +112,7 @@ def get_datasets(config: ExperimentConfig) -> tuple[DataLoader, DataLoader, Data
     return train_loader, val_loader, test_loader
 
 
-def get_result_datasets(config: ExperimentConfig, ids: str, diversity: bool) -> DataLoader:
+def get_result_datasets(config: ExperimentConfig, ids: Optional[str]) -> DataLoader:
     transform = transforms.Compose([
         transforms.LoadImaged(keys=['seg']),
         transforms.EnsureChannelFirstd(keys=['seg']),
@@ -126,8 +124,7 @@ def get_result_datasets(config: ExperimentConfig, ids: str, diversity: bool) -> 
         data=__get_datalist(
             ids_path=config.dataset_ids_path,
             data_path=config.dataset_root_path,
-            filename=ids,
-            diversity=diversity
+            filename=ids
         ),
         transform=transform
     )
