@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 from os.path import join
 from pathlib import Path
-from typing import Optional
 
 import numpy as np
 import torch
@@ -35,24 +34,26 @@ def parse_args():
     parser.add_argument("--num_workers", type=int, help="")
     parser.add_argument("--scale_factor", type=float, help="Latent space y size.")
     parser.add_argument("--num_inference_steps", type=int, default=200, help="")
-    parser.add_argument("--img_to_gen_per_seg_map", type=int, default=1, help="")
     parser.add_argument("--last_gen_finished_on", type=int, default=0, help="")
+    parser.add_argument("--batch_size", type=int, default=8, help="Generation batch size.")
 
     args = parser.parse_args()
     return args
 
 
-def _generate_image(
+def __generate_images(
         config: DictConfig, device: torch.device, scheduler: DDIMScheduler, cond: torch.Tensor, controlnet: ControlNet,
         prompt_embeds: torch.Tensor, diffusion: DiffusionModelUNet, stage1: AutoencoderKL
 ) -> Image:
-    noise = torch.randn((1, config["controlnet"]["params"]["in_channels"], args.x_size, args.y_size)).to(device)
+    noise = torch.randn(
+        size=(cond.shape[0], config["controlnet"]["params"]["in_channels"], args.x_size, args.y_size)
+    ).to(device)
 
     with torch.no_grad():
-        progress_bar = tqdm(scheduler.timesteps)
-        for t in progress_bar:
+        for t in scheduler.timesteps:
             noise_input = torch.cat([noise] * 2)
             cond_input = torch.cat([cond] * 2)
+
             down_block_res_samples, mid_block_res_sample = controlnet(
                 x=noise_input,
                 timesteps=torch.Tensor((t,)).to(noise.device).long(),
@@ -78,22 +79,22 @@ def _generate_image(
 
     sample = np.clip(sample.cpu().numpy(), 0, 1)
     sample = (sample * 255).astype(np.uint8)
-    return Image.fromarray(sample[0, 0])
+    return (Image.fromarray(x[0]) for x in sample)
 
 
-def _get_save_img_path(generate_per_seg_map: int, source_path: str, output_path: str, idx: int) -> Path:
-    if generate_per_seg_map == 1:
-        return Path(join(output_path, '/'.join(source_path.split('/')[-2:])))
+def __get_save_img_path(source_path: list[str], output_path: str) -> tuple:
+    return tuple(
+        Path(join(output_path, '/'.join(path.split('/')[-2:])))
+        for path in source_path
+    )
 
-    return Path(join(output_path, '/'.join(source_path.split('/')[-2:]).replace('.png', f'_{idx}.png')))
 
-
-def _generate_and_save_image(
+def __generate_and_save_image(
         config: DictConfig, device: torch.device, scheduler: DDIMScheduler, cond: torch.Tensor, controlnet: ControlNet,
-        prompt_embeds: torch.Tensor, diffusion: DiffusionModelUNet, stage1: AutoencoderKL, generate_per_seg_map: int,
-        source_path: str, output_path: str, idx: Optional[int] = None
+        prompt_embeds: torch.Tensor, diffusion: DiffusionModelUNet, stage1: AutoencoderKL, source_path: list,
+        output_path: str
 ) -> None:
-    im = _generate_image(
+    ims = __generate_images(
         config=config,
         device=device,
         scheduler=scheduler,
@@ -104,22 +105,11 @@ def _generate_and_save_image(
         stage1=stage1
     )
 
-    path = _get_save_img_path(
-        generate_per_seg_map=generate_per_seg_map,
-        source_path=source_path,
-        output_path=output_path,
-        idx=idx
-    )
+    paths = __get_save_img_path(source_path=source_path, output_path=output_path)
 
-    path.parent.mkdir(parents=True, exist_ok=True)
-    im.save(join(path.parent, path.name))
-
-
-def _generate_images_for_one_size_data_loader(kwargs: dict, num_to_gen: int, last_finished_idx: int) -> None:
-    pbar = tqdm(range(last_finished_idx, num_to_gen), total=num_to_gen - last_finished_idx, desc='Generating images')
-    for img_idx in pbar:
-        kwargs.update({'idx': img_idx})
-        _generate_and_save_image(**kwargs)
+    for im, path in zip(ims, paths):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        im.save(join(path.parent, path.name))
 
 
 def main(args):
@@ -161,50 +151,36 @@ def main(args):
     tokenizer = CLIPTokenizer.from_pretrained("stabilityai/stable-diffusion-2-1-base", subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained("stabilityai/stable-diffusion-2-1-base", subfolder="text_encoder")
 
-    prompt = ["", "T1-weighted image of a brain."]
-    text_inputs = tokenizer(
-        prompt,
+    text_input_ids = tokenizer(
+        ["T1-weighted image of a brain." for _ in range(args.batch_size * 2)],
         padding="max_length",
         max_length=tokenizer.model_max_length,
         truncation=True,
         return_tensors="pt",
-    )
-    text_input_ids = text_inputs.input_ids
+    ).input_ids
 
-    prompt_embeds = text_encoder(text_input_ids.squeeze(1))
-    prompt_embeds = prompt_embeds[0].to(device)
+    prompt_embeds = text_encoder(text_input_ids.squeeze(1))[0].to(device)
 
     test_loader = get_test_dataloader(
-        batch_size=1,
+        batch_size=args.batch_size,
         test_ids=args.ids,
         root_path="/data/generation",
         num_workers=args.num_workers
     )
 
-    kwargs = {
-        'config': config,
-        'device': device,
-        'scheduler': scheduler,
-        'controlnet': controlnet,
-        'prompt_embeds': prompt_embeds,
-        'diffusion': diffusion,
-        'stage1': stage1,
-        'generate_per_seg_map': args.img_to_gen_per_seg_map,
-        'output_path': str(output_dir)
-    }
-
-    pbar = tqdm(enumerate(test_loader), total=len(test_loader))
-    for i, x in pbar:
-        kwargs.update({'cond': x['seg'].to(device), 'source_path': x['flair'][0]})
-
-        if len(test_loader) == 1:
-            _generate_images_for_one_size_data_loader(
-                kwargs=kwargs,
-                num_to_gen=args.img_to_gen_per_seg_map,
-                last_finished_idx=args.last_gen_finished_on
-            )
-        else:
-            _generate_and_save_image(**kwargs)
+    for i, x in tqdm(enumerate(test_loader), total=len(test_loader), desc='Generating images'):
+        __generate_and_save_image(
+            config=config,
+            device=device,
+            scheduler=scheduler,
+            cond=x['seg'].to(device),
+            controlnet=controlnet,
+            prompt_embeds=prompt_embeds,
+            diffusion=diffusion,
+            stage1=stage1,
+            source_path=x['flair'],
+            output_path=str(output_dir)
+        )
 
 
 if __name__ == "__main__":

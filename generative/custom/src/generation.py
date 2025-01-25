@@ -4,7 +4,7 @@ from os.path import join
 
 import torch
 
-from utils.data.generation import generate_img, generate_img_from_one_img
+from utils.data.generation import generate_and_save_img
 from utils.data.dataset import get_result_datasets
 from accelerate import Accelerator
 from accelerate.utils import PrecisionType
@@ -14,9 +14,8 @@ from base import config, model, noise_scheduler
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_id", type=int, help="Run ID")
-parser.add_argument("--img_to_gen_per_seg_map", type=int, default=1, help="")
 parser.add_argument("--output_dir", help="Path to output directory")
-parser.add_argument("--ids_name", help="Filename of ids tsv file")
+parser.add_argument("--ids_name", default=None, help="Filename of ids tsv file")
 args = parser.parse_args()
 
 accelerator = Accelerator(
@@ -39,7 +38,7 @@ model.enable_xformers_memory_efficient_attention()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-data_loader = get_result_datasets(config=config, ids=args.ids_name, img_per_seg_map=args.img_to_gen_per_seg_map)
+data_loader = get_result_datasets(config=config, ids=args.ids_name)
 
 model, data_loader = accelerator.prepare(model, data_loader, device_placement=[device, device])
 pipeline = create_pipeline(
@@ -47,14 +46,4 @@ pipeline = create_pipeline(
     noise_scheduler=noise_scheduler
 )
 
-if len(data_loader) == 1:
-    generate_img_from_one_img(
-        pipeline=pipeline,
-        seed=config.seed,
-        data_loader=data_loader,
-        img_per_seg=args.img_to_gen_per_seg_map,
-        output_dir=args.output_dir,
-        batch_size=config.gen_batch_size
-    )
-else:
-    generate_img(pipeline=pipeline, seed=config.seed, data_loader=data_loader, output_dir=args.output_dir)
+generate_and_save_img(pipeline=pipeline, seed=config.seed, data_loader=data_loader, output_dir=args.output_dir)
