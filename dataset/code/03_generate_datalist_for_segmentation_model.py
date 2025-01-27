@@ -94,12 +94,6 @@ parser.add_argument("--src_ids", help="Path to source ids tsv file.")
 parser.add_argument("--output_dir", help="Path to output directory where new ids files will be places.")
 parser.add_argument("--real_size", type=int, default=0, help="Number of real samples in data list.")
 parser.add_argument(
-    "--only_real",
-    default=True,
-    action=argparse.BooleanOptionalAction,
-    help="If true the datalist will only contain real samples. True -> --only_real, False -> --no-only_real"
-)
-parser.add_argument(
     "--number_of_data_lists", help="Number of data in each data list in \"20, 40\" format."
 )
 parser.add_argument(
@@ -123,24 +117,18 @@ loop = zip(
 for total_img_number, fake_per_patient in loop:
     print(f'Using {total_img_number} generated images per patient')
 
-    if args.only_real:
-        datalist = __generate_raw_gen_datalist(data=train)
-    else:
-        datalist = __generate_raw_gen_datalist(data=train, quantity_of_gen_img=fake_per_patient)
+    datalist = __generate_raw_gen_datalist(data=train, quantity_of_gen_img=fake_per_patient)
 
     if len(datalist) != total_img_number:
         real_healthy_idx = datalist[(datalist['is_real'] == True) & (datalist['status'] == 'healthy')].index
         real_unhealthy_idx = datalist[(datalist['is_real'] == True) & (datalist['status'] == 'unhealthy')].index
 
-        if args.only_real:
-            size = total_img_number // 2
-        else:
-            size = args.real_size // 2
+        size = total_img_number // 2 if fake_per_patient == 0 else args.real_size // 2
 
         real_healthy = datalist.loc[np.random.choice(real_healthy_idx, size=size, replace=False)]
         real_unhealthy = datalist.loc[np.random.choice(real_unhealthy_idx, size=size, replace=False)]
 
-        if args.only_real:
+        if fake_per_patient == 0:
             to_concat = [real_healthy, real_unhealthy]
         else:
             fake_healthy_idx = datalist[(datalist['is_real'] == False) & (datalist['status'] == 'healthy')].index
@@ -155,7 +143,7 @@ for total_img_number, fake_per_patient in loop:
 
         datalist = pd.concat(to_concat, axis=0, ignore_index=True).sample(frac=1).reset_index(drop=True)
 
-    __show_stats(dataset=datalist, only_real=args.only_real)
+    __show_stats(dataset=datalist, only_real=fake_per_patient == 0)
 
     filename = args.src_ids.split("/")[-1]
     if args.number_of_data_lists.find(',') > -1:
