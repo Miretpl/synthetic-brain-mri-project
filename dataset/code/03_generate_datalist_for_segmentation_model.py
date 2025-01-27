@@ -81,6 +81,13 @@ def __show_stats(dataset: pd.DataFrame, only_real: bool) -> None:
         )
 
 
+def __parse_fake_per_patient(data: Optional[str], data_number: int) -> list:
+    if data is None:
+        return [NUMBER_OF_IMAGES_PER_PATIENT // 2 for _ in range(data_number)]
+
+    return [int(x) for x in data.replace(' ', '').split(',')]
+
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--src_ids", help="Path to source ids tsv file.")
@@ -96,34 +103,37 @@ parser.add_argument(
     "--number_of_data_lists", help="Number of data in each data list in \"20, 40\" format."
 )
 parser.add_argument(
-    "--number_of_fake_data_per_patient",
-    type=int,
-    default=NUMBER_OF_IMAGES_PER_PATIENT // 2,
+    "--fake_img_per_patient",
+    default=None,
     help="Number of fake images per patient."
 )
-
 args = parser.parse_args()
 
 output_dir = Path(args.output_dir)
 output_dir.mkdir(exist_ok=True, parents=True)
 
-train = __get_data_dict(path=args.src_ids)
-train = __seg_data_per_patient(train)
+train = __seg_data_per_patient(__get_data_dict(path=args.src_ids))
 
-for gen_img_number in (int(x) for x in args.number_of_data_lists.replace(' ', '').split(',')):
-    print(f'Using {gen_img_number} generated images per patient')
+data_list = args.number_of_data_lists.replace(' ', '').split(',')
+
+loop = zip(
+    (int(x) for x in data_list),
+    __parse_fake_per_patient(data=args.fake_img_per_patient, data_number=len(data_list))
+)
+for total_img_number, fake_per_patient in loop:
+    print(f'Using {total_img_number} generated images per patient')
 
     if args.only_real:
-        datalist = __generate_raw_gen_datalist(data=train, quantity_of_gen_img=0)
+        datalist = __generate_raw_gen_datalist(data=train)
     else:
-        datalist = __generate_raw_gen_datalist(data=train, quantity_of_gen_img=args.number_of_fake_data_per_patient)
+        datalist = __generate_raw_gen_datalist(data=train, quantity_of_gen_img=fake_per_patient)
 
-    if len(datalist) != gen_img_number:
+    if len(datalist) != total_img_number:
         real_healthy_idx = datalist[(datalist['is_real'] == True) & (datalist['status'] == 'healthy')].index
         real_unhealthy_idx = datalist[(datalist['is_real'] == True) & (datalist['status'] == 'unhealthy')].index
 
         if args.only_real:
-            size = gen_img_number // 2
+            size = total_img_number // 2
         else:
             size = args.real_size // 2
 
@@ -136,7 +146,7 @@ for gen_img_number in (int(x) for x in args.number_of_data_lists.replace(' ', ''
             fake_healthy_idx = datalist[(datalist['is_real'] == False) & (datalist['status'] == 'healthy')].index
             fake_unhealthy_idx = datalist[(datalist['is_real'] == False) & (datalist['status'] == 'unhealthy')].index
 
-            size = (gen_img_number - args.real_size) // 2
+            size = (total_img_number - args.real_size) // 2
 
             fake_healthy = datalist.loc[np.random.choice(fake_healthy_idx, size=size, replace=False)]
             fake_unhealthy = datalist.loc[np.random.choice(fake_unhealthy_idx, size=size, replace=False)]
