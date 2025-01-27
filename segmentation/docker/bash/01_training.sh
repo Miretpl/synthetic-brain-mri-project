@@ -8,13 +8,13 @@ python ./code/train.py \
 
 python ./code/train.py \
   --output_dir="/models/exp_01/mixed/custom/runs" \
-  --train_ids="/data/ids/segmentation/big/mixed/train.tsv" \
+  --train_ids="/data/ids/segmentation/big/mixed/exp_01/train.tsv" \
   --real_data_path="/data/raw/extracted" \
   --fake_data_path="/data/segmentation/custom"
 
 python ./code/train.py \
   --output_dir="/models/exp_01/mixed/controlnet/runs" \
-  --train_ids="/data/ids/segmentation/big/mixed/train.tsv" \
+  --train_ids="/data/ids/segmentation/big/mixed/exp_01/train.tsv" \
   --real_data_path="/data/raw/extracted" \
   --fake_data_path="/data/segmentation/controlnet"
 

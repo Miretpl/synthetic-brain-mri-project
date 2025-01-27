@@ -147,7 +147,7 @@ for total_img_number, fake_per_patient in loop:
 
     filename = args.src_ids.split("/")[-1]
     if args.number_of_data_lists.find(',') > -1:
-        filename = filename.replace(".tsv", f"_{gen_img_number}.tsv")
+        filename = filename.replace(".tsv", f"_{total_img_number}.tsv")
 
     datalist.to_csv(
         f'{str(output_dir)}/{filename}',
