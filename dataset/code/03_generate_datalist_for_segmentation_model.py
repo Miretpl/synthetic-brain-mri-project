@@ -1,12 +1,14 @@
 import argparse
 from collections import defaultdict
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 import numpy as np
 
 
 NUMBER_OF_IMAGES_PER_PATIENT = 6
+MIN_NUMBER_OF_REAL_IMAGES_PER_PATIENT = 2
 
 
 def __get_data_dict(path: str) -> list:
@@ -29,35 +31,35 @@ def __seg_data_per_patient(data: list) -> defaultdict:
     return result
 
 
-def __get_patient_data_row(data: list, idx: int, is_real: bool) -> dict:
+def __get_patient_data_row(data: list, idx: int, is_real: bool, gen_idx: Optional[int] = None) -> dict:
     return {
-        'flair': data[idx]['flair'],
+        'flair': data[idx]['flair'] if gen_idx is None else data[idx]['flair'].replace('.png', f'_{gen_idx}.png'),
         'seg': data[idx]['seg'],
         'status': data[idx]['status'],
         'is_real': is_real
     }
 
 
-def __generate_raw_gen_datalist(data: defaultdict, quantity_of_gen_img: int) -> pd.DataFrame:
+def __generate_raw_gen_datalist(data: defaultdict, quantity_of_gen_img: int = 0) -> pd.DataFrame:
     result = []
+    remaining = quantity_of_gen_img - (NUMBER_OF_IMAGES_PER_PATIENT - MIN_NUMBER_OF_REAL_IMAGES_PER_PATIENT)
 
-    if quantity_of_gen_img == 0:
-        for _, p_data in data.items():
-            for i, idx in enumerate(range(NUMBER_OF_IMAGES_PER_PATIENT)):
-                result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=True))
-    else:
-        for _, p_data in data.items():
-            idxes = np.random.choice(
-                a=np.array(range(len(p_data))),
-                size=NUMBER_OF_IMAGES_PER_PATIENT - quantity_of_gen_img,
-                replace=False
-            )
+    for _, p_data in data.items():
+        idxes = np.random.choice(
+            a=np.array(range(len(p_data))),
+            size=max(NUMBER_OF_IMAGES_PER_PATIENT - quantity_of_gen_img, MIN_NUMBER_OF_REAL_IMAGES_PER_PATIENT),
+            replace=False
+        )
 
-            for idx in idxes:
-                result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=False))
+        for idx in idxes:
+            result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=True))
 
-            for idx in (x for x in range(NUMBER_OF_IMAGES_PER_PATIENT) if x not in idxes):
-                result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=True))
+        for idx in (x for x in range(NUMBER_OF_IMAGES_PER_PATIENT) if x not in idxes):
+            result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=False))
+
+        if remaining > 0:
+            for idx in np.random.choice(a=np.array(range(len(p_data))), size=remaining, replace=False):
+                result.append(__get_patient_data_row(data=p_data, idx=idx, is_real=False, gen_idx=1))
 
     return pd.DataFrame(result)
 
