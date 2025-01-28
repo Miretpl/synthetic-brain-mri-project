@@ -38,6 +38,24 @@ do
     --results_dir="/results/exp_01/synthetic/controlnet/runs/0$number"
 done
 
+# Evaluate experiment 02 - mixed big runs
+var_ds=( 4000 6000 8000 10000 12000 )
+var_run=( 8 9 10 )
+for ds in "${var_ds[@]}"
+do
+  for run_id in "${var_run[@]}"
+  do
+    echo "Evaluation of experiment 02 - mixed big - custom - ds $ds - run_id $run_id"
+    python ./code/evaluate.py \
+      --runs_dir="/models/exp_02/mixed/extra_exp/custom/ds_$ds/runs/$run_id" \
+      --results_dir="/results/exp_02/mixed/extra_exp/custom/ds_$ds/runs/$run_id"
+
+    python ./code/evaluate.py \
+      --runs_dir="/models/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id" \
+      --results_dir="/results/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id"
+  done
+done
+
 # Evaluate experiment 02 - real runs
 var_ds=( 20 40 60 80 100 200 400 600 800 )
 var_run=( 11 12 13 14 15 16 )
