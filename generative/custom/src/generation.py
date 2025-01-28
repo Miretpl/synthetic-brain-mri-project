@@ -15,7 +15,7 @@ from base import config, model, noise_scheduler
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_id", type=int, help="Run ID")
 parser.add_argument("--output_dir", help="Path to output directory")
-parser.add_argument("--ids_name", default=None, help="Filename of ids tsv file")
+parser.add_argument("--ids_path", default=None, help="Location of ids tsv file")
 args = parser.parse_args()
 
 accelerator = Accelerator(
@@ -38,7 +38,7 @@ model.enable_xformers_memory_efficient_attention()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-data_loader = get_result_datasets(config=config, ids=args.ids_name)
+data_loader = get_result_datasets(config=config, ids_path=args.ids_path)
 
 model, data_loader = accelerator.prepare(model, data_loader, device_placement=[device, device])
 pipeline = create_pipeline(

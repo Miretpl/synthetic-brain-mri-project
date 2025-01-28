@@ -10,14 +10,14 @@ from torch.utils.data import DataLoader
 from utils.config.config import ExperimentConfig
 
 
-def __get_datalist(ids_path: str, filename: Optional[str], data_path: Optional[str] = None) -> list[dict]:
-    if filename is None:
+def __get_datalist(ids_path: str, data_path: Optional[str] = None) -> list[dict]:
+    if ids_path is None:
         data_dicts = [{
             'flair': f'{data_path}/01045/03_flair_unhealthy_{idx}.png',  # This will be used as path for saving image
             'seg': f'{data_path}/01045/03_seg_unhealthy.png'
         } for idx in range(1000)]
     else:
-        df = pd.read_csv(join(ids_path, filename), sep='\t')
+        df = pd.read_csv(ids_path, sep='\t')
 
         if data_path is not None:
             data_dicts = [
@@ -68,13 +68,13 @@ def get_datasets(config: ExperimentConfig) -> tuple[DataLoader, DataLoader, Data
     test_transforms, val_transforms, train_transforms = __get_transforms()
 
     train_dicts = __get_datalist(
-        ids_path=config.dataset_ids_path, data_path=config.dataset_root_path, filename=config.training_ids
+        ids_path=f'{config.dataset_ids_path}/{config.training_ids}', data_path=config.dataset_root_path
     )
     val_dicts = __get_datalist(
-        ids_path=config.dataset_ids_path, data_path=config.dataset_root_path, filename=config.validation_ids
+        ids_path=f'{config.dataset_ids_path}/{config.validation_ids}', data_path=config.dataset_root_path
     )
     test_dicts = __get_datalist(
-        ids_path=config.dataset_ids_path, data_path=config.dataset_root_path, filename=config.test_ids
+        ids_path=f'{config.dataset_ids_path}/{config.test_ids}', data_path=config.dataset_root_path
     )
 
     train_ds = Dataset(data=train_dicts, transform=train_transforms)
@@ -112,7 +112,7 @@ def get_datasets(config: ExperimentConfig) -> tuple[DataLoader, DataLoader, Data
     return train_loader, val_loader, test_loader
 
 
-def get_result_datasets(config: ExperimentConfig, ids: Optional[str]) -> DataLoader:
+def get_result_datasets(config: ExperimentConfig, ids_path: Optional[str]) -> DataLoader:
     transform = transforms.Compose([
         transforms.LoadImaged(keys=['seg']),
         transforms.EnsureChannelFirstd(keys=['seg']),
@@ -122,9 +122,8 @@ def get_result_datasets(config: ExperimentConfig, ids: Optional[str]) -> DataLoa
 
     ds = Dataset(
         data=__get_datalist(
-            ids_path=config.dataset_ids_path,
-            data_path=config.dataset_root_path,
-            filename=ids
+            ids_path=ids_path,
+            data_path=config.dataset_root_path
         ),
         transform=transform
     )
@@ -141,15 +140,8 @@ def get_result_datasets(config: ExperimentConfig, ids: Optional[str]) -> DataLoa
 
 
 def get_raw_dataloader(config: ExperimentConfig, ids: str) -> DataLoader:
-    ds = Dataset(
-        data=__get_datalist(
-            ids_path=config.dataset_ids_path,
-            filename=ids
-        )
-    )
-
     return DataLoader(
-        ds,
+        Dataset(data=__get_datalist(ids_path=ids)),
         batch_size=1,
         shuffle=True,
         num_workers=config.num_workers,
