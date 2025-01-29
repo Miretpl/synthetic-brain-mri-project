@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+dataset_quantity=( 8000 10000 12000 )
+for number in "${dataset_quantity[@]}"
+do
+  python /workspace/src/python/generation/dataset.py \
+    --output_dir="/data/segmentation/big/mixed/controlnet/dataset_$number" \
+    --stage1_path="/project/outputs/runs/final_models/autoencoder.pth" \
+    --diffusion_path="/project/outputs/runs/final_models/diffusion_model.pth" \
+    --controlnet_path="/project/outputs/runs/final_models/controlnet_model.pth" \
+    --stage1_config_file_path="/config/stage1/aekl_v0.yaml" \
+    --diffusion_config_file_path="/config/ldm/ldm_v0.yaml" \
+    --controlnet_config_file_path="/config/controlnet/controlnet_v0.yaml" \
+    --ids="/data/ids/segmentation/big/mixed/exp_02/train_$number.tsv" \
+    --x_size=20 \
+    --y_size=28 \
+    --num_workers=8 \
+    --scale_factor=0.3
+done

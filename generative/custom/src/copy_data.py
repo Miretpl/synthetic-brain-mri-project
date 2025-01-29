@@ -15,7 +15,7 @@ def parse_args():
 
     parser.add_argument("--src_dir", help="Data path where source data is located.")
     parser.add_argument("--dst_dir", help="Data path where source data should be copied.")
-    parser.add_argument("--ids", help="Path to ids tsv file.")
+    parser.add_argument("--ids_path", help="Location of ids tsv file.")
     parser.add_argument("--num_workers", type=int, help="")
 
     return parser.parse_args()
@@ -26,7 +26,7 @@ def main(args):
     dst_dir.mkdir(exist_ok=True, parents=True)
 
     config = ExperimentConfig()
-    data_loader = get_raw_dataloader(config=config, ids=args.ids)
+    data_loader = get_raw_dataloader(config=config, ids=args.ids_path)
 
     for batch in tqdm(data_loader, desc='Coping data'):
         src_path = f'{args.src_dir}/{batch["seg"][0]}'
