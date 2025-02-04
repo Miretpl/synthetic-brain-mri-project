@@ -24,7 +24,7 @@ class ExperimentConfig:
     gen_batch_size = 24
     num_workers = 4
     images_to_generate = 8
-    epochs = 100
+    epochs = 200
     gradient_accumulation_steps = 8
     learning_rate = 1e-4
     lr_warmup_steps = 500
