@@ -1,4 +1,19 @@
 # Information
+The content of this repository represents work done by Przemysław Mirowski (owner of this repository) during Master's 
+thesis titled "Generation of brain scan images from segmentation maps using diffusion models" done at Lodz University 
+of Technology in Poland.
+
+This work is licensed under [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1).
+
+## Citation
+```text
+@mastersthesis{mirowski2024,
+    author={Przemysław Mirowski},
+    title={Generation of brain scan images from segmentation maps using diffusion models},
+    school={Lodz University of Technology},
+    year=2024
+}
+```
 
 ## General information
 All content of the repository was tested on Windows 11 23H2 with Docker Desktop 4.37.1 and NVIDIA Studio Driver 566.36.
