@@ -1,5 +1,5 @@
 xformers==0.0.22
-diffusers==0.28.2
+diffusers==0.25.0
 comet-ml==3.47.6
 pandas==2.2.3
 monai==1.4.0

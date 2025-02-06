@@ -10,6 +10,6 @@ python /workspace/src/python/training/train_aekl.py \
   --n_epochs=100 \
   --adv_start=10 \
   --eval_freq=5 \
-  --num_workers=4 \
+  --num_workers=2 \
   --experiment="AEKL" \
   --data_root_path="/data/generation"
