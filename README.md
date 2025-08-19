@@ -228,7 +228,7 @@ To evaluate segmentation models you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -modelsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
       -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
    ```
 3. Start training of segmentation model
