@@ -49,8 +49,8 @@ whole_dataset_quantity = len(sub_dirs)
 train_quantity = int(whole_dataset_quantity * 0.8)
 val_quantity = (whole_dataset_quantity - train_quantity) // 2
 
-train_sub_dirs, test_sub_dirs = train_test_split(sub_dirs, train_size=train_quantity)
-test_sub_dirs, val_sub_dirs = train_test_split(test_sub_dirs, train_size=val_quantity)
+train_sub_dirs, test_sub_dirs = train_test_split(sub_dirs, train_size=train_quantity, random_state=0)
+test_sub_dirs, val_sub_dirs = train_test_split(test_sub_dirs, train_size=val_quantity, random_state=0)
 
 data_df = create_datalist(set_paths=train_sub_dirs, desc='Train set')
 train_stats = calculate_statistics(data_df)

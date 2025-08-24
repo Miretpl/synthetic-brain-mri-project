@@ -4,7 +4,6 @@ Here we compute the MS-SSIM score between the images of the test set of the MIMI
 created byt the AutoencoderKL.
 """
 import argparse
-from pathlib import Path
 
 import pandas as pd
 import torch

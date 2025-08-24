@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 
 
+np.random.seed(0)
+
 NUMBER_OF_IMAGES_PER_PATIENT = 6
 MIN_NUMBER_OF_REAL_IMAGES_PER_PATIENT = 2
 

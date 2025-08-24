@@ -1,6 +1,5 @@
 param(
-    [String]$dataPath,
-    [String]$modelsPath
+    [String]$dataPath
 )
 
 Write-Host "Docker image - build"
@@ -10,5 +9,4 @@ Write-Host "Docker image - run"
 docker run `
     --rm `
     -v "${dataPath}:/data" `
-    -v "${modelsPath}:/models" `
     synthetic-brain-mri:dataset-1.0.0
