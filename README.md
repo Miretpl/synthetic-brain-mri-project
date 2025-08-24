@@ -41,11 +41,9 @@ To run scripts for data preparation you need to execute below commands:
    ```
 2. Run PowerShell script (build and run docker container)
    ```shell
-   ./run.ps1 `
-      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelsPath "C:\Users\$env:USERNAME\Desktop\models"
+   ./run.ps1 -dataPath "C:\Users\$env:USERNAME\Desktop\data"
    ```
-   where you need to create `data` and `models` directories. Under `data` directory you will have `raw` directory 
+   where you need to create `data`. Under `data` directory you will have `raw` directory 
    created with `BraTS2021_Training_Data.tar` file downloaded and unpacked from 
    [BraTS2021](https://www.kaggle.com/datasets/dschettler8845/brats-2021-task1) website
 3. After finished data preparation there will be couple new directories created:
