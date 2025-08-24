@@ -15,6 +15,9 @@ from nibabel import load
 from tqdm import tqdm
 
 
+MAX_VALUE_OF_CLASS = 4
+
+
 def get_image(path: str, source_image: Optional[np.ndarray] = None) -> tuple[np.ndarray, list]:
     empty_seg_number = None
     img = load(path).get_fdata()[40:200, 11:235, 20:140:20]
@@ -32,7 +35,10 @@ def get_image(path: str, source_image: Optional[np.ndarray] = None) -> tuple[np.
     img = img.astype('float32')
 
     if not np.isclose(img.max(), 0):
-        img = (img - img.min()) / (img.max() - img.min())
+        if source_image is not None:
+            img = img / MAX_VALUE_OF_CLASS
+        else:
+            img = (img - img.min()) / (img.max() - img.min())
 
     return (img * 255).astype('uint8'), empty_seg_number
 
