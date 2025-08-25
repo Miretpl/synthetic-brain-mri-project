@@ -6,7 +6,6 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 import re
 import importlib
 import torch
-from argparse import Namespace
 import numpy as np
 from PIL import Image
 import os
