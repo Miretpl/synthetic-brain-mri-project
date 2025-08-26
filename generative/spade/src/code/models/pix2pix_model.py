@@ -110,7 +110,6 @@ class Pix2PixModel(torch.nn.Module):
         data['label'] = data['label'].long()
         if self.use_gpu():
             data['label'] = data['label'].cuda()
-            data['instance'] = data['instance'].cuda()
             data['image'] = data['image'].cuda()
 
         # create one-hot label map
