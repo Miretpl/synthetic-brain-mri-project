@@ -49,7 +49,6 @@ class Pix2pixDataset(BaseDataset):
         # input image (real images)
         image_path = self.data_list[index]['flair']
         image = Image.open(image_path)
-        image = image.convert('RGB')
 
         transform_image = get_transform(self.opt, params)
         image_tensor = transform_image(image)
