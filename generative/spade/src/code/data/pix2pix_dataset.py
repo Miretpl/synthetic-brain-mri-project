@@ -32,11 +32,6 @@ class Pix2pixDataset(BaseDataset):
         assert False, "A subclass of Pix2pixDataset must override self.get_paths(self, opt)"
         return label_paths, image_paths, instance_paths
 
-    def paths_match(self, path1, path2):
-        filename1_without_ext = os.path.splitext(os.path.basename(path1))[0]
-        filename2_without_ext = os.path.splitext(os.path.basename(path2))[0]
-        return filename1_without_ext == filename2_without_ext
-
     def __getitem__(self, index):
         # Label Image
         label_path = self.data_list[index]['seg']
