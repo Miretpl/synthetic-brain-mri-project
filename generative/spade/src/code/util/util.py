@@ -5,6 +5,8 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 
 import re
 import importlib
+from pathlib import Path
+
 import torch
 import numpy as np
 from PIL import Image
@@ -193,7 +195,8 @@ def find_class_in_module(target_cls_name, module):
 
 def save_network(net, label, epoch, opt):
     save_filename = '%s_net_%s.pth' % (epoch, label)
-    save_path = os.path.join(opt.checkpoints_dir, opt.name, save_filename)
+    save_path = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'epochs', f'{epoch:04d}', 'model', save_filename)
+    mkdirs(Path(save_path).parent)
     torch.save(net.cpu().state_dict(), save_path)
     if len(opt.gpu_ids) and torch.cuda.is_available():
         net.cuda()
