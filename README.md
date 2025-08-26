@@ -159,6 +159,24 @@ command should be executed in previously created docker container):
    ./src/bash/generation/seg/02_copy_seg_masks.sh
    ```
 
+#### SPADE model
+To train SPADE model you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./generative/spade
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelsPath "C:\Users\$env:USERNAME\Desktop\models\generation\spade"
+   ```
+   where you need to create `generation/spade` directory under `models`.
+3. Model training (running script instead docker container)
+   ```shell
+   ./src/bash/training/01_training.sh
+   ```
+
 ### Model evaluation
 To run proposed and ControlNet models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
 commands:
