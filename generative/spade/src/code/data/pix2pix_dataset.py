@@ -43,8 +43,8 @@ class Pix2pixDataset(BaseDataset):
         label = Image.open(label_path)
         params = get_params(self.opt, label.size)
         transform_label = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
-        label_tensor = transform_label(label) * 255.0
-        label_tensor[label_tensor == 255] = self.opt.label_nc  # 'unknown' is opt.label_nc
+        label_tensor = transform_label(label) * (self.opt.label_nc + 1)
+        label_tensor[label_tensor == (self.opt.label_nc + 1)] = self.opt.label_nc
 
         # input image (real images)
         image_path = self.data_list[index]['flair']
