@@ -56,7 +56,6 @@ for epoch in iter_counter.training_epochs():
             visualizer.display_current_results(visuals, epoch, iter_counter.total_steps_so_far)
 
         if iter_counter.needs_saving():
-            print(f'saving the latest model (epoch {epoch}, total_steps {iter_counter.total_steps_so_far})')
             trainer.save(epoch)
             iter_counter.record_current_iter()
 
