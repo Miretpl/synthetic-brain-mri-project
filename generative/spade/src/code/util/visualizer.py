@@ -19,6 +19,8 @@ class Visualizer():
         self.opt = opt
         self.tf_log = opt.isTrain and opt.tf_log
         self.use_html = opt.isTrain and not opt.no_html
+        self.no_save_samples = opt.no_save_samples
+        self.img_dir = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'epochs')
         self.win_size = opt.display_winsize
         self.name = opt.name
         if self.tf_log:
@@ -63,6 +65,18 @@ class Visualizer():
             # Create and write Summary
             summary = self.tf.Summary(value=img_summaries)
             self.writer.add_summary(summary, step)
+
+        if not self.no_save_samples:
+            for label, image_numpy in visuals.items():
+                if isinstance(image_numpy, list):
+                    for i in range(len(image_numpy)):
+                        img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'step_{step:04d}', f'{label}_{i}.png')
+                        util.save_image(image_numpy[i], img_path, True)
+                else:
+                    img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'step_{step:04d}', f'{label}.png')
+                    if len(image_numpy.shape) >= 4:
+                        image_numpy = image_numpy[0]
+                    util.save_image(image_numpy, img_path, True)
 
         if self.use_html: # save images to a html file
             for label, image_numpy in visuals.items():
