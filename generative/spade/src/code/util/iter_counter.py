@@ -6,6 +6,7 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 import os
 import time
 import numpy as np
+from tqdm import tqdm
 
 
 # Helper class that keeps track of training iterations
@@ -31,7 +32,7 @@ class IterationCounter():
 
     # return the iterator of epochs for the training
     def training_epochs(self):
-        return range(self.first_epoch, self.total_epochs + 1)
+        return tqdm(range(self.first_epoch, self.total_epochs + 1), desc='Training')
 
     def record_epoch_start(self, epoch):
         self.epoch_start_time = time.time()

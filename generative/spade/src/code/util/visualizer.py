@@ -127,15 +127,24 @@ class Visualizer():
                 self.writer.add_summary(summary, step)
 
     # errors: same format as |errors| of plotCurrentErrors
-    def print_current_errors(self, epoch, i, errors, t):
-        message = '(epoch: %d, iters: %d, time: %.3f) ' % (epoch, i, t)
+    def print_current_errors(self, epoch, i, errors, progress_bar=None):
+        message = '(epoch: %d, iters: %d) ' % (epoch, i)
+        dict_msg = {}
         for k, v in errors.items():
             #print(v)
             #if v != 0:
             v = v.mean().float()
             message += '%s: %.3f ' % (k, v)
+            dict_msg.update({k: v.item()})
 
-        print(message)
+        if progress_bar:
+            progress_bar.set_postfix({
+                'epoch': epoch,
+                'iter': i,
+                **dict_msg
+            })
+        else:
+            print(message)
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 

@@ -29,7 +29,8 @@ iter_counter = IterationCounter(opt, len(dataloader))
 # create tool for visualization
 visualizer = Visualizer(opt)
 
-for epoch in iter_counter.training_epochs():
+progress_bar = iter_counter.training_epochs()
+for epoch in progress_bar:
     iter_counter.record_epoch_start(epoch)
     for i, data_i in enumerate(dataloader, start=iter_counter.epoch_iter):
         iter_counter.record_one_iteration()
@@ -45,8 +46,12 @@ for epoch in iter_counter.training_epochs():
         # Visualizations
         if iter_counter.needs_printing():
             losses = trainer.get_latest_losses()
-            visualizer.print_current_errors(epoch, iter_counter.epoch_iter,
-                                            losses, iter_counter.time_per_iter)
+            visualizer.print_current_errors(
+                epoch=epoch,
+                i=iter_counter.epoch_iter,
+                errors=losses,
+                progress_bar=progress_bar
+            )
             visualizer.plot_current_errors(losses, iter_counter.total_steps_so_far)
 
         if iter_counter.needs_displaying():
