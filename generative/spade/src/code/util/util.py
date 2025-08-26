@@ -98,32 +98,12 @@ def tensor2im(image_tensor, imtype=np.uint8, normalize=True, tile=False):
 
 # Converts a one-hot tensor into a colorful label map
 def tensor2label(label_tensor, n_label, imtype=np.uint8, tile=False):
-    if label_tensor.dim() == 4:
-        # transform each image in the batch
-        images_np = []
-        for b in range(label_tensor.size(0)):
-            one_image = label_tensor[b]
-            one_image_np = tensor2label(one_image, n_label, imtype)
-            images_np.append(one_image_np.reshape(1, *one_image_np.shape))
-        images_np = np.concatenate(images_np, axis=0)
-        if tile:
-            images_tiled = tile_images(images_np)
-            return images_tiled
-        else:
-            images_np = images_np[0]
-            return images_np
+    label_tensor = label_tensor.to(torch.float16)
 
-    if label_tensor.dim() == 1:
-        return np.zeros((64, 64, 3), dtype=np.uint8)
-    if n_label == 0:
-        return tensor2im(label_tensor, imtype)
-    label_tensor = label_tensor.cpu().float()
-    if label_tensor.size()[0] > 1:
-        label_tensor = label_tensor.max(0, keepdim=True)[1]
-    label_tensor = Colorize(n_label)(label_tensor)
-    label_numpy = np.transpose(label_tensor.numpy(), (1, 2, 0))
-    result = label_numpy.astype(imtype)
-    return result
+    label_tensor[label_tensor == n_label] = (n_label + 1)
+    label_tensor = (label_tensor / (n_label + 1) * 255).cpu().numpy()
+
+    return label_tensor.astype(imtype)
 
 
 def save_image(image_numpy, image_path, create_dir=False):
