@@ -133,7 +133,11 @@ def save_image(image_numpy, image_path, create_dir=False):
         image_numpy = np.expand_dims(image_numpy, axis=2)
     if image_numpy.shape[2] == 1:
         image_numpy = np.repeat(image_numpy, 3, 2)
-    image_pil = Image.fromarray(image_numpy)
+
+    if 1 == image_numpy.shape[0]:
+        image_pil = Image.fromarray(image_numpy[0])
+    else:
+        image_pil = Image.fromarray(image_numpy)
 
     # save to png
     image_pil.save(image_path.replace('.jpg', '.png'))
