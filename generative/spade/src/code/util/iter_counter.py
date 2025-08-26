@@ -17,7 +17,7 @@ class IterationCounter():
         self.first_epoch = 1
         self.total_epochs = opt.niter + opt.niter_decay
         self.epoch_iter = 0  # iter number within each epoch
-        self.iter_record_path = os.path.join(self.opt.checkpoints_dir, self.opt.name, 'iter.txt')
+        self.iter_record_path = os.path.join(self.opt.checkpoints_dir, 'runs', self.opt.name, 'iter.txt')
         if opt.isTrain and opt.continue_train:
             try:
                 self.first_epoch, self.epoch_iter = np.loadtxt(

@@ -24,7 +24,7 @@ class Visualizer():
         if self.tf_log:
             import tensorflow as tf
             self.tf = tf
-            self.log_dir = os.path.join(opt.checkpoints_dir, opt.name, 'logs')
+            self.log_dir = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'logs')
             self.writer = tf.summary.FileWriter(self.log_dir)
 
         if self.use_html:
@@ -33,7 +33,7 @@ class Visualizer():
             print('create web directory %s...' % self.web_dir)
             util.mkdirs([self.web_dir, self.img_dir])
         if opt.isTrain:
-            self.log_name = os.path.join(opt.checkpoints_dir, opt.name, 'loss_log.txt')
+            self.log_name = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'loss_log.txt')
             with open(self.log_name, "a") as log_file:
                 now = time.strftime("%c")
                 log_file.write('================ Training Loss (%s) ================\n' % now)

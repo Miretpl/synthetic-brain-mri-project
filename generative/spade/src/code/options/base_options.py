@@ -113,7 +113,7 @@ class BaseOptions():
         print(message)
 
     def option_file_path(self, opt, makedir=False):
-        expr_dir = os.path.join(opt.checkpoints_dir, opt.name)
+        expr_dir = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'config')
         if makedir:
             util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt')
