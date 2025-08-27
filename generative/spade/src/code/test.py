@@ -11,6 +11,7 @@ from options.test_options import TestOptions
 from models.pix2pix_model import Pix2PixModel
 from util.visualizer import Visualizer
 from util import html
+from tqdm import tqdm
 
 opt = TestOptions().parse()
 
@@ -21,18 +22,8 @@ model.eval()
 
 visualizer = Visualizer(opt)
 
-# create a webpage that summarizes the all results
-web_dir = os.path.join(opt.results_dir, opt.name,
-                       '%s_%s' % (opt.phase, opt.which_epoch))
-webpage = html.HTML(web_dir,
-                    'Experiment = %s, Phase = %s, Epoch = %s' %
-                    (opt.name, opt.phase, opt.which_epoch))
-
 # test
-for i, data_i in enumerate(dataloader):
-    if i * opt.batchSize >= opt.how_many:
-        break
-
+for i, data_i in tqdm(enumerate(dataloader), total=len(dataloader), desc="Image generation"):
     generated = model(data_i, mode='inference')
 
     img_path = data_i['path']
