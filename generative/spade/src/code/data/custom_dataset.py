@@ -33,7 +33,8 @@ class CustomDataset(Pix2pixDataset):
     def get_paths(self, opt):
         if opt.ids_path is None:
             data_dicts = [{
-                'flair': f'{opt.data_dir}/01045/03_flair_unhealthy_{idx}.png',
+                'flair': f'{opt.data_dir}/01045/03_flair_unhealthy.png',
+                'path': f'{opt.data_dir}/01045/03_flair_unhealthy_{idx}.png',
                 # This will be used as path for saving image
                 'seg': f'{opt.data_dir}/01045/03_seg_unhealthy.png'
             } for idx in range(1000)]
@@ -44,6 +45,7 @@ class CustomDataset(Pix2pixDataset):
                 data_dicts = [
                     {
                         'flair': join(opt.data_dir, row['flair']),
+                        'path': join(opt.data_dir, row['flair']),
                         'seg': join(opt.data_dir, row['seg'])
                     }
                     for index, row in df.iterrows()
@@ -52,6 +54,7 @@ class CustomDataset(Pix2pixDataset):
                 data_dicts = [
                     {
                         'flair': row['flair'],
+                        'path': row['flair'],
                         'seg': row['seg']
                     }
                     for index, row in df.iterrows()

@@ -51,7 +51,7 @@ class Pix2pixDataset(BaseDataset):
         input_dict = {
             'label': label_tensor,
             'image': image_tensor,
-            'path': image_path,
+            'path': self.data_list[index]['path'],
         }
 
         # Give subclasses a chance to modify the final output
