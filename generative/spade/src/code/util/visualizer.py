@@ -8,6 +8,8 @@ import ntpath
 import time
 from os.path import join
 
+import numpy as np
+
 from . import util
 from . import html
 import scipy.misc
@@ -69,16 +71,14 @@ class Visualizer():
             self.writer.add_summary(summary, step)
 
         if not self.no_save_samples:
-            for label, image_numpy in visuals.items():
-                if isinstance(image_numpy, list):
-                    for i in range(len(image_numpy)):
-                        img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'step_{step:04d}', f'{label}_{i}.png')
-                        util.save_image(image_numpy[i], img_path, True)
-                else:
-                    img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'step_{step:04d}', f'{label}.png')
-                    if len(image_numpy.shape) >= 4:
-                        image_numpy = image_numpy[0]
-                    util.save_image(image_numpy, img_path, True)
+            input_labels = np.concatenate([img for img in visuals['input_label']], axis=0)
+            synthesized_image = np.concatenate([img for img in visuals['synthesized_image']], axis=0)
+            real_image = np.concatenate([img for img in visuals['real_image']], axis=0)
+
+            img = np.concatenate([input_labels, synthesized_image, real_image], axis=1)
+
+            img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'samples_step_{step:04d}.png')
+            util.save_image(img, img_path, True)
 
         if self.use_html: # save images to a html file
             for label, image_numpy in visuals.items():
@@ -150,8 +150,16 @@ class Visualizer():
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 
-    def convert_visuals_to_numpy(self, t):
-        return util.tensor2im(t)
+    def convert_visuals_to_numpy(self, visuals):
+        for key, t in visuals.items():
+            tile = self.opt.batchSize > 8
+            if 'input_label' == key:
+                t = util.tensor2label(t, self.opt.label_nc, tile=tile)
+            else:
+                t = util.tensor2im(t, tile=tile)
+
+            visuals[key] = t
+        return visuals
 
     # save image to the disk
     def save_images(self, opt, img, image_path):

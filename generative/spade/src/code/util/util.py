@@ -103,7 +103,8 @@ def tensor2label(label_tensor, n_label, imtype=np.uint8, tile=False):
     label_tensor[label_tensor == n_label] = (n_label + 1)
     label_tensor = (label_tensor / (n_label + 1) * 255).cpu().numpy()
 
-    return label_tensor.astype(imtype)
+    shape = (label_tensor.shape[0], label_tensor.shape[2], label_tensor.shape[3])
+    return label_tensor.astype(imtype).reshape(shape)
 
 
 def save_image(image_numpy, image_path, create_dir=False):
@@ -114,10 +115,7 @@ def save_image(image_numpy, image_path, create_dir=False):
     if image_numpy.shape[2] == 1:
         image_numpy = np.repeat(image_numpy, 3, 2)
 
-    if 1 == image_numpy.shape[0]:
-        image_pil = Image.fromarray(image_numpy[0])
-    else:
-        image_pil = Image.fromarray(image_numpy)
+    image_pil = Image.fromarray(image_numpy)
 
     # save to png
     image_pil.save(image_path.replace('.jpg', '.png'))
