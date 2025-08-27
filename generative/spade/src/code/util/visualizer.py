@@ -6,6 +6,8 @@ Licensed under the CC BY-NC-SA 4.0 license (https://creativecommons.org/licenses
 import os
 import ntpath
 import time
+from os.path import join
+
 from . import util
 from . import html
 import scipy.misc
@@ -148,35 +150,14 @@ class Visualizer():
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
 
-    def convert_visuals_to_numpy(self, visuals):
-        for key, t in visuals.items():
-            tile = self.opt.batchSize > 8
-            if 'input_label' == key:
-                t = util.tensor2label(t, self.opt.label_nc, tile=tile)
-            else:
-                t = util.tensor2im(t, tile=tile)
-            visuals[key] = t
-        return visuals
+    def convert_visuals_to_numpy(self, t):
+        return util.tensor2im(t)
 
     # save image to the disk
-    def save_images(self, webpage, visuals, image_path):        
-        visuals = self.convert_visuals_to_numpy(visuals)        
-        
-        image_dir = webpage.get_image_dir()
-        short_path = ntpath.basename(image_path[0])
-        name = os.path.splitext(short_path)[0]
+    def save_images(self, opt, img, image_path):
+        img = self.convert_visuals_to_numpy(img)
 
-        webpage.add_header(name)
-        ims = []
-        txts = []
-        links = []
+        image_path = image_path.split('/')[-2:]
+        save_path = join(opt.results_dir, opt.gen_type, '/'.join(image_path))
 
-        for label, image_numpy in visuals.items():
-            image_name = os.path.join(label, '%s.png' % (name))
-            save_path = os.path.join(image_dir, image_name)
-            util.save_image(image_numpy, save_path, create_dir=True)
-
-            ims.append(image_name)
-            txts.append(label)
-            links.append(image_name)
-        webpage.add_images(ims, txts, links, width=self.win_size)
+        util.save_image(img, save_path, create_dir=True)
