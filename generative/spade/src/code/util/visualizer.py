@@ -158,6 +158,10 @@ class Visualizer():
         img = self.convert_visuals_to_numpy(img)
 
         image_path = image_path.split('/')[-2:]
-        save_path = join(opt.results_dir, opt.gen_type, '/'.join(image_path))
+
+        if opt.gen_type:
+            save_path = join(opt.results_dir, opt.gen_type, '/'.join(image_path))
+        else:
+            save_path = join(opt.results_dir, '/'.join(image_path))
 
         util.save_image(img, save_path, create_dir=True)
