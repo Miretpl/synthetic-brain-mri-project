@@ -25,8 +25,8 @@ class CustomDataset(Pix2pixDataset):
         parser.set_defaults(label_nc=13)
         parser.set_defaults(contain_dontcare_label=False)
 
-        parser.add_argument('--ids_path', type=str, required=True, help='Path to tsv file with set paths')
-        parser.add_argument('--data_dir', type=str, default=None, help='Path to directory where all data is stored')
+        parser.add_argument('--ids_path', type=str, default=None, help='Path to tsv file with set paths')
+        parser.add_argument('--data_dir', type=str, required=True, help='Path to directory where all data is stored')
 
         return parser
 
