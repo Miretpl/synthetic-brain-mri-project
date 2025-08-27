@@ -177,6 +177,33 @@ To train SPADE model you need to execute below commands:
    ./src/bash/training/01_training.sh
    ```
 
+When we will have our final model ready we can start to evaluation and generation of data for segmentation model (all
+command should be executed in previously created docker container):
+1. Data generation for reconstruction analysis
+   ```shell
+   ./src/bash/generation/test/01_reconstruction.sh
+   ```
+   before running script you need to provide proper `--name` and `--which_epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/spade/runs` for `--name` parameter and under 
+   `/models/generation/spade/runs/<name>/epochs` for `--which_epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\spade\runs` in local).
+2. Data generation for diversity analysis
+   ```shell
+   ./src/bash/generation/test/02_diversity.sh
+   ```
+   before running script you need to provide proper `--name` and `--which_epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/spade/runs` for `--name` parameter and under 
+   `/models/generation/spade/runs/<name>/epochs` for `--which_epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\spade\runs` in local).
+3. Data generation for segmentation model
+   ```shell
+   ./src/bash/generation/seg/01_whole_train_set.sh
+   ```
+4. Copy segmentation maps for segmentation model
+   ```shell
+   ./src/bash/generation/seg/02_copy_seg_masks.sh
+   ```
+
 ### Model evaluation
 To run proposed and ControlNet models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
 commands:
