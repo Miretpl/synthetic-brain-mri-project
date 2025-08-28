@@ -12,7 +12,6 @@ python ./src/code/train.py \
   --contain_dontcare_label \
   --aspect_ratio 1.4 \
   --crop_size 224 \
-  --no_vgg_loss \
   --checkpoints_dir /models \
   --no_html \
   --display_freq 1000 \
