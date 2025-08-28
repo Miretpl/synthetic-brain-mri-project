@@ -241,6 +241,18 @@ commands:
    ```shell
    ./src/bash/testing/controlnet/03_diversity_ms-ssim.sh
    ```
+9. Run below command to generate MS-SSIM (reconstruction) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/01_reconstruction_ms-ssim.sh
+   ```
+10. Run below command to generate FID (reconstruction) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/01_reconstruction_fid.sh
+   ```
+11. Run below command to generate MS-SSIM (diversity) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/03_diversity_ms-ssim.sh
+   ```
 
 ## Segmentation model
 ### Training
