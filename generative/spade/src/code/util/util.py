@@ -110,10 +110,6 @@ def tensor2label(label_tensor, n_label, imtype=np.uint8, tile=False):
 def save_image(image_numpy, image_path, create_dir=False):
     if create_dir:
         os.makedirs(os.path.dirname(image_path), exist_ok=True)
-    if len(image_numpy.shape) == 2:
-        image_numpy = np.expand_dims(image_numpy, axis=2)
-    if image_numpy.shape[2] == 1:
-        image_numpy = np.repeat(image_numpy, 3, 2)
 
     image_pil = Image.fromarray(image_numpy)
 
