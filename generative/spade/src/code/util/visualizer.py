@@ -151,14 +151,18 @@ class Visualizer():
             log_file.write('%s\n' % message)
 
     def convert_visuals_to_numpy(self, visuals):
-        for key, t in visuals.items():
-            tile = self.opt.batchSize > 8
-            if 'input_label' == key:
-                t = util.tensor2label(t, self.opt.label_nc, tile=tile)
-            else:
-                t = util.tensor2im(t, tile=tile)
+        if self.opt.isTrain:
+            for key, t in visuals.items():
+                tile = self.opt.batchSize > 8
+                if 'input_label' == key:
+                    t = util.tensor2label(t, self.opt.label_nc, tile=tile)
+                else:
+                    t = util.tensor2im(t, tile=tile)
 
-            visuals[key] = t
+                visuals[key] = t
+        else:
+            visuals = util.tensor2im(visuals)
+
         return visuals
 
     # save image to the disk
