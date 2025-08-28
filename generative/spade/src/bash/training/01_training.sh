@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python ./src/code/train.py \
-  --name "01" \
+  --name "02" \
   --dataset_mode custom \
   --data_dir /data/generation \
   --ids_path /data/ids/raw/train.tsv \

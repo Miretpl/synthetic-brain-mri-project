@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python ./src/code/test.py \
-  --name 01 \
+  --name 02 \
   --preprocess_mode none \
   --crop_size 224 \
   --aspect_ratio 1.4 \
