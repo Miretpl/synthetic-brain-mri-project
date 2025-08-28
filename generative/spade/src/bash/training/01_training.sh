@@ -15,4 +15,5 @@ python ./src/code/train.py \
   --checkpoints_dir /models \
   --no_html \
   --display_freq 1000 \
-  --print_freq 1000
+  --print_freq 1000 \
+  --batchSize 8
