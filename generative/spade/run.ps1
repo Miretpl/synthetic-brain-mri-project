@@ -1,6 +1,6 @@
 param(
     [String]$dataPath,
-    [String]$modelsPath
+    [String]$modelPath
 )
 
 Write-Host "Docker image - build"

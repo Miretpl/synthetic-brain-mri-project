@@ -169,7 +169,7 @@ To train SPADE model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelsPath "C:\Users\$env:USERNAME\Desktop\models\generation\spade"
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\spade"
    ```
    where you need to create `generation/spade` directory under `models`.
 3. Model training (running script instead docker container)
@@ -205,7 +205,7 @@ command should be executed in previously created docker container):
    ```
 
 ### Model evaluation
-To run proposed and ControlNet models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
+To run proposed, ControlNet and SPADE models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
 commands:
 1. Move to testing directory
    ```shell
@@ -265,7 +265,7 @@ To train segmentation model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -modelsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
       -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
    ```
 3. Start training of segmentation model
