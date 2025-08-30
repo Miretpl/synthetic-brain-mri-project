@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python ./src/code/test.py \
-  --name 01 \
+  --name 03 \
   --preprocess_mode none \
   --crop_size 224 \
   --aspect_ratio 1.4 \
@@ -15,4 +15,5 @@ python ./src/code/test.py \
   --which_epoch 50 \
   --checkpoints_dir /models \
   --no_save_samples \
-  --gen_type diversity
+  --gen_type diversity \
+  --use_vae

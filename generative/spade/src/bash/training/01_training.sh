@@ -1,7 +1,7 @@
 #!/bin/bash
 
 python ./src/code/train.py \
-  --name "02" \
+  --name 03 \
   --dataset_mode custom \
   --data_dir /data/generation \
   --ids_path /data/ids/raw/train.tsv \
@@ -16,4 +16,5 @@ python ./src/code/train.py \
   --no_html \
   --display_freq 1000 \
   --print_freq 1000 \
-  --batchSize 8
+  --batchSize 8 \
+  --use_vae
