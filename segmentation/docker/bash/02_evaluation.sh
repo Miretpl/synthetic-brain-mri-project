@@ -2,6 +2,7 @@
 
 # Evaluate experiment 01 - real runs
 var=( 5 6 7 )
+varSpade=( 1 2 3 )
 for number in "${var[@]}"
 do
   echo "Evaluation of experiment 01 - real - run_id 0$number"
@@ -24,6 +25,14 @@ do
     --results_dir="/results/exp_01/mixed/controlnet/runs/0$number"
 done
 
+for number in "${varSpade[@]}"
+do
+  echo "Evaluation of experiment 01 - mixed - spade - run_id 0$number"
+  python ./code/evaluate.py \
+    --runs_dir="/models/exp_01/mixed/spade/runs/0$number" \
+    --results_dir="/results/exp_01/mixed/spade/runs/0$number"
+done
+
 # Evaluate experiment 01 - synthetic runs
 for number in "${var[@]}"
 do
@@ -36,6 +45,14 @@ do
   python ./code/evaluate.py \
     --runs_dir="/models/exp_01/synthetic/controlnet/runs/0$number" \
     --results_dir="/results/exp_01/synthetic/controlnet/runs/0$number"
+done
+
+for number in "${varSpade[@]}"
+do
+  echo "Evaluation of experiment 01 - synthetic - spade - run_id 0$number"
+  python ./code/evaluate.py \
+    --runs_dir="/models/exp_01/synthetic/spade/runs/0$number" \
+    --results_dir="/results/exp_01/synthetic/spade/runs/0$number"
 done
 
 # Evaluate experiment 02 - mixed big runs
@@ -53,6 +70,17 @@ done
 #    python ./code/evaluate.py \
 #      --runs_dir="/models/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id" \
 #      --results_dir="/results/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id"
+#  done
+#done
+
+#for ds in "${var_ds[@]}"
+#do
+#  for run_id in "${varSpade[@]}"
+#  do
+#    echo "Evaluation of experiment 02 - mixed big - spade - ds $ds - run_id $run_id"
+#    python ./code/evaluate.py \
+#      --runs_dir="/models/exp_02/mixed/extra_exp/spade/ds_$ds/runs/$run_id" \
+#      --results_dir="/results/exp_02/mixed/extra_exp/spade/ds_$ds/runs/$run_id"
 #  done
 #done
 
@@ -85,5 +113,16 @@ do
     python ./code/evaluate.py \
       --runs_dir="/models/exp_02/mixed/controlnet/ds_$ds/runs/$run_id" \
       --results_dir="/results/exp_02/mixed/controlnet/ds_$ds/runs/$run_id"
+  done
+done
+
+for ds in "${var_ds[@]}"
+do
+  for run_id in "${varSpade[@]}"
+  do
+    echo "Evaluation of experiment 02 - mixed - spade - ds $ds - run_id $run_id"
+    python ./code/evaluate.py \
+      --runs_dir="/models/exp_02/mixed/spade/ds_$ds/runs/0$run_id" \
+      --results_dir="/results/exp_02/mixed/spade/ds_$ds/runs/0$run_id"
   done
 done
