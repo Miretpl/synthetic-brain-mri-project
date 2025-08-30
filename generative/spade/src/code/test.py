@@ -26,7 +26,5 @@ visualizer = Visualizer(opt)
 for i, data_i in tqdm(enumerate(dataloader), total=len(dataloader), desc="Image generation"):
     generated = model(data_i, mode='inference')
 
-    img_path = data_i['path']
-
     for b in range(generated.shape[0]):
-        visualizer.save_images(opt, generated[b], img_path[b])
+        visualizer.save_images(opt, generated[b], data_i['path'][b])
