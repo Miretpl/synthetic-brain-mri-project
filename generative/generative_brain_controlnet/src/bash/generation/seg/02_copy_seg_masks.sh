@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python /workspace/src/python/generation/copy_data.py \
   --src_dir="/data/raw/extracted" \

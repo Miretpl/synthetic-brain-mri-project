@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 mlrun_id="129642340378682336/38b64d11530d4eac80e48f718bb2333a"
 

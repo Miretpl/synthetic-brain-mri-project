@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Evaluate experiment 01 - real runs
 var=( 5 6 7 )

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 stage1_mlrun_id="129642340378682336/38b64d11530d4eac80e48f718bb2333a"
 ldm_mlrun_id="122096036595437994/1262545b2fa845c380f0f8d77ba6c90b"

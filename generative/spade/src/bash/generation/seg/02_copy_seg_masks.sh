@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python src/code/copy_data.py \
   --src_dir="/data/raw/extracted" \

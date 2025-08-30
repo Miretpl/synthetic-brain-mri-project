@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Train segmentation model - BIG dataset, real, mixed, synthetic
 python ./code/train.py \

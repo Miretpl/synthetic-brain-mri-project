@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python /workspace/src/python/testing/compute_msssim_sample.py \
   --seed=42 \

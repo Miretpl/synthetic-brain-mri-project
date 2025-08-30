@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 dataset_quantity=( 8000 10000 12000 )
 for number in "${dataset_quantity[@]}"

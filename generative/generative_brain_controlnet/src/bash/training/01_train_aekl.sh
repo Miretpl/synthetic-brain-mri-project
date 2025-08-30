@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python /workspace/src/python/training/train_aekl.py \
   --seed=42 \
