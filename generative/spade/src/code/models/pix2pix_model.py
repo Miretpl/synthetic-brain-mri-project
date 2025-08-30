@@ -80,7 +80,7 @@ class Pix2PixModel(torch.nn.Module):
     def save(self, epoch):
         util.save_network(self.netG, 'G', epoch, self.opt)
         util.save_network(self.netD, 'D', epoch, self.opt)
-        if self.opt.use_vae:
+        if self.opt.encode_z:
             util.save_network(self.netE, 'E', epoch, self.opt)
 
     ############################################################################
@@ -96,7 +96,7 @@ class Pix2PixModel(torch.nn.Module):
             netG = util.load_network(netG, 'G', opt.which_epoch, opt)
             if opt.isTrain:
                 netD = util.load_network(netD, 'D', opt.which_epoch, opt)
-            if opt.use_vae:
+            if opt.encode_z:
                 netE = util.load_network(netE, 'E', opt.which_epoch, opt)
 
         return netG, netD, netE
@@ -132,9 +132,9 @@ class Pix2PixModel(torch.nn.Module):
         G_losses = {}
 
         fake_image, KLD_loss = self.generate_fake(
-            input_semantics, real_image, compute_kld_loss=self.opt.use_vae)
+            input_semantics, real_image, compute_kld_loss=self.opt.encode_z)
 
-        if self.opt.use_vae:
+        if self.opt.encode_z:
             G_losses['KLD'] = KLD_loss
 
         pred_fake, pred_real = self.discriminate(
@@ -186,7 +186,7 @@ class Pix2PixModel(torch.nn.Module):
     def generate_fake(self, input_semantics, real_image, compute_kld_loss=False):
         z = None
         KLD_loss = None
-        if self.opt.use_vae:
+        if self.opt.encode_z:
             z, mu, logvar = self.encode_z(real_image)
             if compute_kld_loss:
                 KLD_loss = self.KLDLoss(mu, logvar) * self.opt.lambda_kld
