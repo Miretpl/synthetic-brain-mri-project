@@ -159,8 +159,53 @@ command should be executed in previously created docker container):
    ./src/bash/generation/seg/02_copy_seg_masks.sh
    ```
 
+#### SPADE model
+To train SPADE model you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./generative/spade
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\spade"
+   ```
+   where you need to create `generation/spade` directory under `models`.
+3. Model training (running script instead docker container)
+   ```shell
+   ./src/bash/training/01_training.sh
+   ```
+
+When we will have our final model ready we can start to evaluation and generation of data for segmentation model (all
+command should be executed in previously created docker container):
+1. Data generation for reconstruction analysis
+   ```shell
+   ./src/bash/generation/test/01_reconstruction.sh
+   ```
+   before running script you need to provide proper `--name` and `--which_epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/spade/runs` for `--name` parameter and under 
+   `/models/generation/spade/runs/<name>/epochs` for `--which_epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\spade\runs` in local).
+2. Data generation for diversity analysis
+   ```shell
+   ./src/bash/generation/test/02_diversity.sh
+   ```
+   before running script you need to provide proper `--name` and `--which_epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/spade/runs` for `--name` parameter and under 
+   `/models/generation/spade/runs/<name>/epochs` for `--which_epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\spade\runs` in local).
+3. Data generation for segmentation model
+   ```shell
+   ./src/bash/generation/seg/01_whole_train_set.sh
+   ```
+4. Copy segmentation maps for segmentation model
+   ```shell
+   ./src/bash/generation/seg/02_copy_seg_masks.sh
+   ```
+
 ### Model evaluation
-To run proposed and ControlNet models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
+To run proposed, ControlNet and SPADE models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
 commands:
 1. Move to testing directory
    ```shell
@@ -196,6 +241,18 @@ commands:
    ```shell
    ./src/bash/testing/controlnet/03_diversity_ms-ssim.sh
    ```
+9. Run below command to generate MS-SSIM (reconstruction) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/01_reconstruction_ms-ssim.sh
+   ```
+10. Run below command to generate FID (reconstruction) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/01_reconstruction_fid.sh
+   ```
+11. Run below command to generate MS-SSIM (diversity) for SPADE model
+   ```shell
+   ./src/bash/testing/spade/03_diversity_ms-ssim.sh
+   ```
 
 ## Segmentation model
 ### Training
@@ -208,7 +265,7 @@ To train segmentation model you need to execute below commands:
    ```shell
    .\run.ps1 `
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
-      -modelPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
+      -modelsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\artifacts" `
       -resultsPath "C:\Users\$env:USERNAME\Desktop\models\segmentation\results"
    ```
 3. Start training of segmentation model

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python /workspace/src/python/testing/compute_fid.py \
   --seed=42 \

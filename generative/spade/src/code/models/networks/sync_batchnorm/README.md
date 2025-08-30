@@ -1,0 +1,1 @@
+Content of directory sync_batchnorm was downloaded from [vacancy/Synchronized-BatchNorm-PyTorch](https://github.com/vacancy/Synchronized-BatchNorm-PyTorch) repository.

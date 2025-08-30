@@ -1,0 +1,4 @@
+dominate==2.9.1
+dill==0.4.0
+scikit-image==0.25.2
+pandas==2.3.2

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Train segmentation model - BIG dataset, real, mixed, synthetic
 python ./code/train.py \
@@ -19,6 +19,12 @@ python ./code/train.py \
   --fake_data_path="/data/segmentation/controlnet"
 
 python ./code/train.py \
+  --output_dir="/models/exp_01/mixed/spade/runs" \
+  --train_ids="/data/ids/segmentation/big/mixed/exp_01/train.tsv" \
+  --real_data_path="/data/raw/extracted" \
+  --fake_data_path="/data/segmentation/spade"
+
+python ./code/train.py \
   --output_dir="/models/exp_01/synthetic/custom/runs" \
   --train_ids="/data/ids/raw/train.tsv" \
   --real_data_path="/data/segmentation/custom"
@@ -27,6 +33,11 @@ python ./code/train.py \
   --output_dir="/models/exp_01/synthetic/controlnet/runs" \
   --train_ids="/data/ids/raw/train.tsv" \
   --real_data_path="/data/segmentation/controlnet"
+
+python ./code/train.py \
+  --output_dir="/models/exp_01/synthetic/spade/runs" \
+  --train_ids="/data/ids/raw/train.tsv" \
+  --real_data_path="/data/segmentation/spade"
 
 # Train segmentation model - BIG mixed datasets
 #dataset_quantity=( 4000 6000 )
@@ -50,19 +61,26 @@ python ./code/train.py \
 #dataset_quantity=( 8000 10000 12000 )
 #for number in "${dataset_quantity[@]}"
 #do
-#  echo "Training model on big mixed datasets - custom - $number"
+#  echo "Training model on big mixed datasets - Custom - $number"
 #  python ./code/train.py \
 #    --output_dir="/models/exp_02/mixed/extra_exp/custom/ds_$number/runs" \
 #    --train_ids="/data/ids/segmentation/big/mixed/exp_02/train_$number.tsv" \
 #    --real_data_path="/data/raw/extracted" \
 #    --fake_data_path="/data/segmentation/big/mixed/custom/dataset_$number"
 #
-#  echo "Training model on big mixed datasets - controlnet - $number"
+#  echo "Training model on big mixed datasets - ControlNet - $number"
 #  python ./code/train.py \
 #    --output_dir="/models/exp_02/mixed/extra_exp/controlnet/ds_$number/runs" \
 #    --train_ids="/data/ids/segmentation/big/mixed/exp_02/train_$number.tsv" \
 #    --real_data_path="/data/raw/extracted" \
 #    --fake_data_path="/data/segmentation/big/mixed/controlnet/dataset_$number"
+#
+#  echo "Training model on big mixed datasets - SPADE - $number"
+#  python ./code/train.py \
+#    --output_dir="/models/exp_02/mixed/extra_exp/spade/ds_$number/runs" \
+#    --train_ids="/data/ids/segmentation/big/mixed/exp_02/train_$number.tsv" \
+#    --real_data_path="/data/raw/extracted" \
+#    --fake_data_path="/data/segmentation/big/mixed/spade/dataset_$number"
 #done
 
 # Train segmentation model - SMALL REAL datasets
@@ -96,4 +114,11 @@ do
     --train_ids="/data/ids/segmentation/small/mixed/train_$number.tsv" \
     --real_data_path="/data/raw/extracted" \
     --fake_data_path="/data/segmentation/controlnet"
+
+  echo "Training model on small real datasets - $number - SPADE model"
+  python ./code/train.py \
+    --output_dir="/models/exp_02/mixed/spade/ds_$number/runs" \
+    --train_ids="/data/ids/segmentation/small/mixed/train_$number.tsv" \
+    --real_data_path="/data/raw/extracted" \
+    --fake_data_path="/data/segmentation/spade"
 done

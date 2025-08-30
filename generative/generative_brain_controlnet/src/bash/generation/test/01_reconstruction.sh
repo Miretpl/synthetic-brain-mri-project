@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python /workspace/src/python/generation/dataset.py \
   --output_dir="/results/reconstruction" \

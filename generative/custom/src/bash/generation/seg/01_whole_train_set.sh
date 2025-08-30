@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 python src/generation.py \
   --run_id=39 \
