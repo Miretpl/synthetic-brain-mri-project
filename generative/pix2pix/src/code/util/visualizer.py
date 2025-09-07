@@ -158,7 +158,7 @@ class Visualizer:
         if self.use_wandb:
             self.wandb_run.log(losses, step=total_iters)
 
-    def print_current_losses(self, epoch, iters, losses, t_comp, t_data):
+    def print_current_losses(self, epoch, iters, losses, progress_bar):
         """print current losses on console; also save the losses to the disk
 
         Parameters:
@@ -169,11 +169,21 @@ class Visualizer:
             t_data (float) -- data loading time per data point (normalized by batch_size)
         """
         local_rank = int(os.environ.get("LOCAL_RANK", 0))
-        message = f"[Rank {local_rank}] (epoch: {epoch}, iters: {iters}, time: {t_comp:.3f}, data: {t_data:.3f}) "
+        message = f"[Rank {local_rank}] (epoch: {epoch}, iters: {iters}) "
+
+        dict_msg = {}
         for k, v in losses.items():
-            message += f", {k}: {v:.3f}"
+            message += '%s: %.3f ' % (k, v)
+            dict_msg.update({k: v})
         message += "\n"
-        print(message)  # print the message on ALL ranks with rank info
+
+        if progress_bar:
+            progress_bar.set_postfix({
+                'iter': iters,
+                **dict_msg
+            })
+        else:
+            print(message)
 
         # Only save to log file on main process (rank 0)
         if local_rank == 0:
