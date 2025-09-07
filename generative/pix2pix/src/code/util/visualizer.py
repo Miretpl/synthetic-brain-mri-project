@@ -63,6 +63,7 @@ class Visualizer:
         self.saved = False
         self.use_wandb = opt.use_wandb
         self.current_epoch = 0
+        self.img_dir = os.path.join(opt.checkpoints_dir, 'runs', opt.name, 'epochs')
 
         # Initialize wandb if enabled
         if self.use_wandb:
@@ -80,7 +81,7 @@ class Visualizer:
             print(f"create web directory {self.web_dir}...")
             util.mkdirs([self.web_dir, self.img_dir])
         # create a logging file to store training losses
-        self.log_name = Path(opt.checkpoints_dir) / opt.name / "loss_log.txt"
+        self.log_name = Path(opt.checkpoints_dir) / 'runs' / opt.name / "loss_log.txt"
         with open(self.log_name, "a") as log_file:
             now = time.strftime("%c")
             log_file.write(f"================ Training Loss ({now}) ================\n")
