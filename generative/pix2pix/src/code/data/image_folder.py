@@ -7,6 +7,8 @@ so that this class can load images from both current directory and its subdirect
 import torch.utils.data as data
 from pathlib import Path
 from PIL import Image
+import pandas as pd
+from os.path import join
 
 IMG_EXTENSIONS = [
     ".jpg",
@@ -30,14 +32,40 @@ def is_image_file(filename):
     return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
 
-def make_dataset(dir, max_dataset_size=float("inf")):
+def make_dataset(dir, ids_path, max_dataset_size=float("inf")):
     images = []
     dir_path = Path(dir)
     assert dir_path.is_dir(), f"{dir} is not a valid directory"
 
-    for path in sorted(dir_path.rglob("*")):
-        if path.is_file() and is_image_file(path.name):
-            images.append(str(path))
+    if ids_path is None:
+        images = [{
+            'flair': f'{dir_path}/01045/03_flair_unhealthy.png',
+            'path': f'{dir_path}/01045/03_flair_unhealthy_{idx}.png',
+            # This will be used as path for saving image
+            'seg': f'{dir_path}/01045/03_seg_unhealthy.png'
+        } for idx in range(1000)]
+    else:
+        df = pd.read_csv(ids_path, sep='\t')
+
+        if dir_path is not None:
+            images = [
+                {
+                    'flair': join(dir_path, row['flair']),
+                    'path': join(dir_path, row['flair']),
+                    'seg': join(dir_path, row['seg'])
+                }
+                for index, row in df.iterrows()
+            ]
+        else:
+            images = [
+                {
+                    'flair': row['flair'],
+                    'path': row['flair'],
+                    'seg': row['seg']
+                }
+                for index, row in df.iterrows()
+            ]
+
     return images[: min(max_dataset_size, len(images))]
 
 
