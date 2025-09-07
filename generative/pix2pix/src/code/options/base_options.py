@@ -106,7 +106,7 @@ class BaseOptions:
         print(message)
 
         # save to the disk
-        expr_dir = Path(opt.checkpoints_dir) / opt.name
+        expr_dir = Path(opt.checkpoints_dir) / f'runs/{opt.name}'
         util.mkdirs(expr_dir)
         file_name = expr_dir / f"{opt.phase}_opt.txt"
         with open(file_name, "wt") as opt_file:
