@@ -298,6 +298,18 @@ commands:
    ```shell
    ./src/bash/testing/spade/03_diversity_ms-ssim.sh
    ```
+12. Run below command to generate MS-SSIM (reconstruction) for Pix2Pix model
+   ```shell
+   ./src/bash/testing/pix2pix/01_reconstruction_ms-ssim.sh
+   ```
+13. Run below command to generate FID (reconstruction) for Pix2Pix model
+   ```shell
+   ./src/bash/testing/pix2pix/01_reconstruction_fid.sh
+   ```
+14. Run below command to generate MS-SSIM (diversity) for Pix2Pix model
+   ```shell
+   ./src/bash/testing/pix2pix/03_diversity_ms-ssim.sh
+   ```
 
 ## Segmentation model
 ### Training
