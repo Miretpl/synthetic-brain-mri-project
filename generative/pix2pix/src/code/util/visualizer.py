@@ -104,6 +104,15 @@ class Visualizer:
         if "LOCAL_RANK" in os.environ and dist.is_initialized() and dist.get_rank() != 0:
             return
 
+        if save_result:
+            real_A = np.concatenate([util.tensor2label(img) for img in visuals["real_A"]])
+            fake_B = np.concatenate([util.tensor2im(img) for img in visuals["fake_B"]])
+            real_B = np.concatenate([util.tensor2im(img) for img in visuals["real_B"]])
+
+            img = np.concatenate([real_A, fake_B, real_B], axis=1)
+            img_path = os.path.join(self.img_dir, f'{epoch:04d}', 'samples', f'samples_step_{total_iters:04d}.png')
+            util.save_image(img, img_path, True)
+
         if self.use_wandb:
             ims_dict = {}
             for label, image in visuals.items():
