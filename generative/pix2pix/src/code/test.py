@@ -26,14 +26,10 @@ See options/base_options.py and options/test_options.py for more test options.
 See training and test tips at: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/blob/master/docs/tips.md
 See frequently asked questions at: https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/blob/master/docs/qa.md
 """
-
-import os
-from pathlib import Path
 from options.test_options import TestOptions
 from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
-from util import html
 import torch
 from tqdm import tqdm
 
@@ -53,6 +49,8 @@ if __name__ == "__main__":
     opt.no_flip = True  # no flip; comment this line if results on flipped images are needed.
 
     dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+    print(f'Found {len(dataset)} images')
+
     model = create_model(opt)  # create a model given opt.model and other options
     model.setup(opt)  # regular setup: load and print networks; create schedulers
 
