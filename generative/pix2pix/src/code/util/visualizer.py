@@ -1,3 +1,5 @@
+from os.path import join
+
 import numpy as np
 import sys
 import ntpath
@@ -12,7 +14,7 @@ import os
 import torch.distributed as dist
 
 
-def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
+def save_images(opt, visuals, image_path):
     """Save images to the disk.
 
     Parameters:
@@ -24,20 +26,16 @@ def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
 
     This function will save images stored in 'visuals' to the HTML file specified by 'webpage'.
     """
-    image_dir = webpage.get_image_dir()
-    name = Path(image_path[0]).stem
+    img = util.tensor2im(visuals['fake_B'])
 
-    webpage.add_header(name)
-    ims, txts, links = [], [], []
-    for label, im_data in visuals.items():
-        im = util.tensor2im(im_data)
-        image_name = f"{name}_{label}.png"
-        save_path = image_dir / image_name
-        util.save_image(im, save_path, aspect_ratio=aspect_ratio)
-        ims.append(image_name)
-        txts.append(label)
-        links.append(image_name)
-    webpage.add_images(ims, txts, links, width=width)
+    image_path = image_path.split('/')[-2:]
+
+    if opt.gen_type:
+        save_path = join(opt.results_dir, opt.gen_type, '/'.join(image_path))
+    else:
+        save_path = join(opt.results_dir, '/'.join(image_path))
+
+    util.save_image(img[0], save_path, create_dir=True)
 
 
 class Visualizer:

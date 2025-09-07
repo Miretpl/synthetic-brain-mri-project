@@ -57,7 +57,7 @@ class AlignedDataset(BaseDataset):
         B = B_transform(B) * (_NUM_CLASSES + 1)
         B[B == (_NUM_CLASSES + 1)] = _NUM_CLASSES
 
-        return {"A": A, "B": B, "A_paths": AB_path['flair'], "B_paths": AB_path['seg']}
+        return {"A": A, "B": B, "A_paths": AB_path['flair'], "B_paths": AB_path['seg'], "C_paths": AB_path['path']}
 
     def __len__(self):
         """Return the total number of images in the dataset."""

@@ -91,9 +91,8 @@ class BaseModel(ABC):
 
                 # Load networks if needed
                 if not self.isTrain or opt.continue_train:
-                    load_suffix = f"iter_{opt.load_iter}" if opt.load_iter > 0 else opt.epoch
-                    load_filename = f"{load_suffix}_net_{name}.pth"
-                    load_path = self.save_dir / load_filename
+                    load_filename = f"{opt.epoch}_net_{name}.pth"
+                    load_path = self.save_dir / f'{opt.epoch:04d}' / 'model' / load_filename
 
                     if isinstance(net, torch.nn.parallel.DistributedDataParallel):
                         net = net.module
