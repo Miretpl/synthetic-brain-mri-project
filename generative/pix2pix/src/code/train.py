@@ -71,6 +71,4 @@ if __name__ == "__main__":
         if epoch % opt.save_epoch_freq == 0:  # cache our model every <save_epoch_freq> epochs
             model.save_networks(epoch)
 
-        print(f"End of epoch {epoch} / {opt.n_epochs + opt.n_epochs_decay} \t Time Taken: {time.time() - epoch_start_time:.0f} sec")
-
     cleanup_ddp()
