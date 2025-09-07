@@ -4,7 +4,10 @@ import ntpath
 import time
 from . import util, html
 from pathlib import Path
-import wandb
+try:
+    import wandb
+except ImportError:
+    print('Warning: wandb package cannot be found. The option "--use_wandb" will result in error.')
 import os
 import torch.distributed as dist
 
