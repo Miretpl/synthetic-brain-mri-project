@@ -204,6 +204,51 @@ command should be executed in previously created docker container):
    ./src/bash/generation/seg/02_copy_seg_masks.sh
    ```
 
+#### Pix2Pix model
+To train Pix2Pix model you need to execute below commands:
+1. Move to custom model directory
+   ```shell
+   cd ./generative/pix2pix
+   ```
+2. Run PowerShell script (build and run docker container)
+   ```shell
+   .\run.ps1 `
+      -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
+      -modelPath "C:\Users\$env:USERNAME\Desktop\models\generation\pix2pix"
+   ```
+   where you need to create `generation/pix2pix` directory under `models`.
+3. Model training (running script instead docker container)
+   ```shell
+   ./src/bash/training/01_training.sh
+   ```
+
+When we will have our final model ready we can start to evaluation and generation of data for segmentation model (all
+command should be executed in previously created docker container):
+1. Data generation for reconstruction analysis
+   ```shell
+   ./src/bash/generation/test/01_reconstruction.sh
+   ```
+   before running script you need to provide proper `--name` and `--epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/pix2pix/runs` for `--name` parameter and under 
+   `/models/generation/pix2pix/runs/<name>/epochs` for `--epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\pix2pix\runs` in local).
+2. Data generation for diversity analysis
+   ```shell
+   ./src/bash/generation/test/02_diversity.sh
+   ```
+   before running script you need to provide proper `--name` and `--epoch` values (if it is the last run it will 
+   be the newest name of the directory under `/models/generation/pix2pix/runs` for `--name` parameter and under 
+   `/models/generation/pix2pix/runs/<name>/epochs` for `--epoch` parameter in docker container or 
+   `C:\Users\$env:USERNAME\Desktop\models\generation\pix2pix\runs` in local).
+3. Data generation for segmentation model
+   ```shell
+   ./src/bash/generation/seg/01_whole_train_set.sh
+   ```
+4. Copy segmentation maps for segmentation model
+   ```shell
+   ./src/bash/generation/seg/02_copy_seg_masks.sh
+   ```
+
 ### Model evaluation
 To run proposed, ControlNet and SPADE models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
 commands:
