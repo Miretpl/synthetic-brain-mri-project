@@ -35,6 +35,7 @@ from models import create_model
 from util.visualizer import save_images
 from util import html
 import torch
+from tqdm import tqdm
 
 try:
     import wandb
@@ -50,7 +51,7 @@ if __name__ == "__main__":
     opt.batch_size = 1  # test code only supports batch_size = 1
     opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
     opt.no_flip = True  # no flip; comment this line if results on flipped images are needed.
-    
+
     dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
     model = create_model(opt)  # create a model given opt.model and other options
     model.setup(opt)  # regular setup: load and print networks; create schedulers
@@ -66,9 +67,8 @@ if __name__ == "__main__":
     # For [CycleGAN]: It should not affect CycleGAN as CycleGAN uses instancenorm without dropout.
     if opt.eval:
         model.eval()
-    for i, data in enumerate(dataset):
-        if i >= opt.num_test:  # only apply our model to opt.num_test images.
-            break
+
+    for i, data in tqdm(enumerate(dataset), total=len(dataset), desc='Image generation'):
         model.set_input(data)  # unpack data from data loader
         model.test()  # run inference
         visuals = model.get_current_visuals()  # get image results
