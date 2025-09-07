@@ -69,17 +69,11 @@ if __name__ == "__main__":
                 visualizer.plot_current_losses(total_iters, losses)
 
             if total_iters % opt.save_latest_freq == 0:  # cache our latest model every <save_latest_freq> iterations
-                print(f"saving the latest model (epoch {epoch}, total_iters {total_iters})")
-                save_suffix = f"iter_{total_iters}" if opt.save_by_iter else "latest"
-                model.save_networks(save_suffix)
-
-            iter_data_time = time.time()
+                model.save_networks(epoch)
 
         model.update_learning_rate()  # update learning rates at the end of every epoch
 
         if epoch % opt.save_epoch_freq == 0:  # cache our model every <save_epoch_freq> epochs
-            print(f"saving the model at the end of epoch {epoch}, iters {total_iters}")
-            model.save_networks("latest")
             model.save_networks(epoch)
 
         print(f"End of epoch {epoch} / {opt.n_epochs + opt.n_epochs_decay} \t Time Taken: {time.time() - epoch_start_time:.0f} sec")

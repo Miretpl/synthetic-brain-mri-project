@@ -33,7 +33,7 @@ class BaseModel(ABC):
         """
         self.opt = opt
         self.isTrain = opt.isTrain
-        self.save_dir = Path(opt.checkpoints_dir) / opt.name  # save all the checkpoints to save_dir
+        self.save_dir = Path(opt.checkpoints_dir) / 'runs' / opt.name / 'epochs'  # save all the checkpoints to save_dir
         self.device = opt.device
         # with [scale_width], input images might have different sizes, which hurts the performance of cudnn.benchmark.
         if opt.preprocess != "scale_width":
@@ -190,7 +190,9 @@ class BaseModel(ABC):
             for name in self.model_names:
                 if isinstance(name, str):
                     save_filename = f"{epoch}_net_{name}.pth"
-                    save_path = self.save_dir / save_filename
+                    save_path = self.save_dir / f'{epoch:04d}' / 'model' / save_filename
+                    save_path.parent.mkdir(exist_ok=True, parents=True)
+
                     net = getattr(self, "net" + name)
 
                     # 1. First, unwrap from DDP if it exists
