@@ -11,7 +11,7 @@ docker run `
     --rm `
     --gpus all `
     -v "${dataPath}:/data" `
-    -v "${modelsPath}:/models" `
+    -v "${modelPath}:/models" `
     -it `
     synthetic-brain-mri:spade-1.0.0 `
     bash
