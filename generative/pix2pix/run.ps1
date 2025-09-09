@@ -4,7 +4,7 @@ param(
 )
 
 Write-Host "Docker image - build"
-docker build -t synthetic-brain-mri:spade-1.0.0 -f ./docker/Dockerfile .
+docker build -t synthetic-brain-mri:pix2pix-1.0.0 -f ./docker/Dockerfile .
 
 Write-Host "Docker image - run"
 docker run `
@@ -13,5 +13,5 @@ docker run `
     -v "${dataPath}:/data" `
     -v "${modelPath}:/models" `
     -it `
-    synthetic-brain-mri:spade-1.0.0 `
+    synthetic-brain-mri:pix2pix-1.0.0 `
     bash
