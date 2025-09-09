@@ -26,8 +26,8 @@ Computer configuration is listed in the table below:
 Below there are descriptions regarding every part of the work:
 1. Data preparation - focuses on preparing data for generative model training and creating sets of ids for generative 
    and segmentation model training,
-2. Generative models - focuses on proposed and ControlNet model training, data generation for evaluation and segmentation
-   model, and evaluation of generative models
+2. Generative models - focuses on proposed, ControlNet, SPADE and Pix2Pix model training, data generation for evaluation
+   and segmentation model, and evaluation of generative models
 3. Segmentation model - focuses on segmentation model training
 
 All sections are separate from each other which means that when there is command execution it should be done from root 
@@ -250,8 +250,8 @@ command should be executed in previously created docker container):
    ```
 
 ### Model evaluation
-To run proposed, ControlNet and SPADE models evaluation (calculation of FID and MS-SSIM scores) you need to execute below 
-commands:
+To run proposed, ControlNet, SPADE and Pix2Pix models evaluation (calculation of FID and MS-SSIM scores) you need to 
+execute below commands:
 1. Move to testing directory
    ```shell
    cd ./generative/testing

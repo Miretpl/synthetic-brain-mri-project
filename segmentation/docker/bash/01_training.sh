@@ -118,22 +118,21 @@ dataset_quantity=( 20 40 60 80 100 200 400 600 800 )
 
 for number in "${dataset_quantity[@]}"
 do
-  echo "Training model on small real datasets - $number - Custom model"
-
+  echo "Training model on small mixed datasets - $number - Custom model"
   python ./code/train.py \
     --output_dir="/models/exp_02/mixed/custom/ds_$number/runs" \
     --train_ids="/data/ids/segmentation/small/mixed/train_$number.tsv" \
     --real_data_path="/data/raw/extracted" \
     --fake_data_path="/data/segmentation/custom"
 
-  echo "Training model on small real datasets - $number - ControlNet model"
+  echo "Training model on small mixed datasets - $number - ControlNet model"
   python ./code/train.py \
     --output_dir="/models/exp_02/mixed/controlnet/ds_$number/runs" \
     --train_ids="/data/ids/segmentation/small/mixed/train_$number.tsv" \
     --real_data_path="/data/raw/extracted" \
     --fake_data_path="/data/segmentation/controlnet"
 
-  echo "Training model on small real datasets - $number - SPADE model"
+  echo "Training model on small mixed datasets - $number - SPADE model"
   python ./code/train.py \
     --output_dir="/models/exp_02/mixed/spade/ds_$number/runs" \
     --train_ids="/data/ids/segmentation/small/mixed/train_$number.tsv" \

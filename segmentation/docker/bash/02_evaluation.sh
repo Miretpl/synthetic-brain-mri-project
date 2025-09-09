@@ -69,6 +69,7 @@ done
 #      --runs_dir="/models/exp_02/mixed/extra_exp/custom/ds_$ds/runs/$run_id" \
 #      --results_dir="/results/exp_02/mixed/extra_exp/custom/ds_$ds/runs/$run_id"
 #
+#    echo "Evaluation of experiment 02 - mixed big - controlnet - ds $ds - run_id $run_id"
 #    python ./code/evaluate.py \
 #      --runs_dir="/models/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id" \
 #      --results_dir="/results/exp_02/mixed/extra_exp/controlnet/ds_$ds/runs/$run_id"
