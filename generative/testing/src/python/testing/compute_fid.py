@@ -52,13 +52,13 @@ def get_features(image, radnet):
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seed", type=int, default=2, help="Random seed to use.")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed to use.")
     parser.add_argument("--sample_dir", help="Location of the samples to evaluate.")
     parser.add_argument("--test_ids", help="Location of file with test ids.")
-    parser.add_argument("--batch_size", type=int, default=256, help="Batch size.")
-    parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
+    parser.add_argument("--batch_size", type=int, default=8, help="Batch size.")
+    parser.add_argument("--num_workers", type=int, default=4, help="Number of loader workers")
     parser.add_argument("--model", help="Name of generative model")
-    parser.add_argument("--access_mode", help="Access mode to metadata file")
+    parser.add_argument("--access_mode", default="a", help="Access mode to metadata file")
 
     args = parser.parse_args()
     return args
