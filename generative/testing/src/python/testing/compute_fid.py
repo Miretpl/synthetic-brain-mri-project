@@ -14,7 +14,7 @@ from monai.data import Dataset
 from monai.utils import set_determinism
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from util import get_test_dataloader
+from util import get_test_dataloader, save_metadata
 
 
 def subtract_mean(x: torch.Tensor) -> torch.Tensor:
@@ -57,6 +57,8 @@ def parse_args():
     parser.add_argument("--test_ids", help="Location of file with test ids.")
     parser.add_argument("--batch_size", type=int, default=256, help="Batch size.")
     parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
+    parser.add_argument("--model", help="Name of generative model")
+    parser.add_argument("--access_mode", help="Access mode to metadata file")
 
     args = parser.parse_args()
     return args
@@ -137,7 +139,8 @@ def main(args):
     metric = FIDMetric()
     fid = metric(samples_features, test_features)
 
-    print(f"FID: {fid:.6f}")
+    metadata = {args.model: {"Reconstruction": {"FID": round(fid.item(), 6)}}}
+    save_metadata(data=metadata, access_mode=args.access_mode)
 
 
 if __name__ == "__main__":

@@ -5,4 +5,6 @@ python /workspace/src/python/testing/compute_fid.py \
   --sample_dir="/generation/spade/results/reconstruction" \
   --test_ids="/data/ids/raw/test.tsv" \
   --batch_size=8 \
-  --num_workers=4
+  --num_workers=4 \
+  --model="SPADE" \
+  --access_mode="a"

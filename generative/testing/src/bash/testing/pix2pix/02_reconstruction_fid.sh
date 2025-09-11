@@ -5,4 +5,6 @@ python /workspace/src/python/testing/compute_fid.py \
   --sample_dir="/generation/pix2pix/results/reconstruction" \
   --test_ids="/data/ids/raw/test.tsv" \
   --batch_size=8 \
-  --num_workers=4
+  --num_workers=4 \
+  --model="Pix2Pix" \
+  --access_mode="a"

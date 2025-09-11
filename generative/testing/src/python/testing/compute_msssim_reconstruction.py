@@ -5,7 +5,6 @@ created byt the AutoencoderKL.
 """
 import argparse
 
-import pandas as pd
 import torch
 from generative.metrics import MultiScaleSSIMMetric
 from generative.networks.nets import AutoencoderKL
@@ -13,7 +12,7 @@ from monai.config import print_config
 from monai.utils import set_determinism
 from omegaconf import OmegaConf
 from tqdm import tqdm
-from util import get_test_dataloader
+from util import get_test_dataloader, save_metadata
 
 
 def parse_args():
@@ -25,6 +24,8 @@ def parse_args():
     parser.add_argument("--test_ids", help="Location of file with test ids.")
     parser.add_argument("--batch_size", type=int, default=256, help="Testing batch size.")
     parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
+    parser.add_argument("--model", help="Name of generative model")
+    parser.add_argument("--access_mode", help="Access mode to metadata file")
 
     args = parser.parse_args()
     return args
@@ -55,7 +56,8 @@ def main(args):
         ))
 
     ms_ssim_list = torch.cat(ms_ssim_list, dim=0)
-    print(f"Mean MS-SSIM: {ms_ssim_list.mean():.6f}")
+    metadata = {args.model: {"Reconstruction": {"MS-SSIM": round(ms_ssim_list.mean().item(), 6)}}}
+    save_metadata(data=metadata, access_mode=args.access_mode)
 
 
 if __name__ == "__main__":
