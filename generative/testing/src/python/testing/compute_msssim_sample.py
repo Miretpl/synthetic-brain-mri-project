@@ -84,15 +84,13 @@ def main(args):
 
     print("Computing MS-SSIM...")
     ms_ssim_list = []
-    pbar = tqdm(enumerate(eval_loader), total=len(eval_loader))
-    for step, batch in pbar:
+    for step, batch in tqdm(enumerate(eval_loader), total=len(eval_loader)):
         img = batch["flair"]
         for batch2 in eval_loader_2:
             img2 = batch2["flair"]
             if batch["flair_meta_dict"]["filename_or_obj"][0] == batch2["flair_meta_dict"]["filename_or_obj"][0]:
                 continue
             ms_ssim_list.append(ms_ssim(img.to(device), img2.to(device)).item())
-        pbar.update()
 
     ms_ssim_list = np.array(ms_ssim_list)
     metadata = {args.model: {"Diversity": {"MS-SSIM": round(ms_ssim_list.mean().item(), 6)}}}
