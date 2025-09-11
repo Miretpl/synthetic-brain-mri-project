@@ -1,6 +1,10 @@
 """Utility functions for testing."""
 from __future__ import annotations
 
+import collections
+from json import dumps, load
+from pathlib import Path
+
 import pandas as pd
 from monai import transforms
 from monai.data import Dataset
@@ -43,6 +47,31 @@ def __get_dataset_row(row: pd.Series, real_root: str, fake_root: str | None = No
         "real": f"{real_root}/{row['flair']}",
         "fake": f"{fake_root}/{row['flair']}"
     }
+
+
+def __update(d: dict, u: dict) -> dict:
+    for k, v in u.items():
+        if isinstance(v, collections.abc.Mapping):
+            d[k] = __update(d.get(k, {}), v)
+        else:
+            d[k] = v
+
+    return d
+
+
+def save_metadata(data: dict, access_mode: str) -> None:
+    meta_dir = '/data/metadata/generation'
+    Path(meta_dir).mkdir(parents=True, exist_ok=True)
+
+    content = {}
+    if "a" in access_mode:
+        with open(f"{meta_dir}/metrics.json") as f:
+            content = load(f)
+
+    content = __update(content, data)
+
+    with open(f'{meta_dir}/metrics.json', "w") as f:
+        f.write(dumps(content, indent=4))
 
 
 def get_test_dataloader(

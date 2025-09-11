@@ -262,54 +262,21 @@ execute below commands:
       -dataPath "C:\Users\$env:USERNAME\Desktop\data" `
       -modelsGenPath "C:\Users\$env:USERNAME\Desktop\models\generation"
    ```
-3. Run below command to generate MS-SSIM (reconstruction) for proposed model
+3. Run below command to generate MS-SSIM (reconstruction)
    ```shell
-   ./src/bash/testing/custom/01_reconstruction_ms-ssim.sh
+   ./src/bash/testing/01_reconstruction_ms-ssim.sh
    ```
-4. Run below command to generate FID (reconstruction) for proposed model
+4. Run below command to generate FID (reconstruction)
    ```shell
-   ./src/bash/testing/custom/01_reconstruction_fid.sh
+   ./src/bash/testing/02_reconstruction_fid.sh
    ```
 5. Run below command to generate MS-SSIM (diversity) for proposed model
    ```shell
-   ./src/bash/testing/custom/03_diversity_ms-ssim.sh
+   ./src/bash/testing/03_diversity_ms-ssim.sh
    ```
-6. Run below command to generate MS-SSIM (reconstruction) for ControlNet model
-   ```shell
-   ./src/bash/testing/controlnet/01_reconstruction_ms-ssim.sh
-   ```
-7. Run below command to generate FID (reconstruction) for ControlNet model
-   ```shell
-   ./src/bash/testing/controlnet/01_reconstruction_fid.sh
-   ```
-8. Run below command to generate MS-SSIM (diversity) for ControlNet model
-   ```shell
-   ./src/bash/testing/controlnet/03_diversity_ms-ssim.sh
-   ```
-9. Run below command to generate MS-SSIM (reconstruction) for SPADE model
-   ```shell
-   ./src/bash/testing/spade/01_reconstruction_ms-ssim.sh
-   ```
-10. Run below command to generate FID (reconstruction) for SPADE model
-   ```shell
-   ./src/bash/testing/spade/01_reconstruction_fid.sh
-   ```
-11. Run below command to generate MS-SSIM (diversity) for SPADE model
-   ```shell
-   ./src/bash/testing/spade/03_diversity_ms-ssim.sh
-   ```
-12. Run below command to generate MS-SSIM (reconstruction) for Pix2Pix model
-   ```shell
-   ./src/bash/testing/pix2pix/01_reconstruction_ms-ssim.sh
-   ```
-13. Run below command to generate FID (reconstruction) for Pix2Pix model
-   ```shell
-   ./src/bash/testing/pix2pix/01_reconstruction_fid.sh
-   ```
-14. Run below command to generate MS-SSIM (diversity) for Pix2Pix model
-   ```shell
-   ./src/bash/testing/pix2pix/03_diversity_ms-ssim.sh
-   ```
+
+After finished evaluation, under the directory `/data/metadata/generation` (from the container perspective) the 
+`metrics.json` file will be created. It contains all results from the evaluation of all generative models.
 
 ## Segmentation model
 ### Training

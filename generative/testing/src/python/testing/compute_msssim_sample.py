@@ -15,14 +15,17 @@ from monai.data import Dataset
 from monai.utils import set_determinism
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+from util import save_metadata
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--seed", type=int, default=2, help="Random seed to use.")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed to use.")
     parser.add_argument("--sample_dir", help="Location of the samples to evaluate.")
-    parser.add_argument("--num_workers", type=int, default=8, help="Number of loader workers")
+    parser.add_argument("--num_workers", type=int, default=4, help="Number of loader workers")
+    parser.add_argument("--model", help="Name of generative model")
+    parser.add_argument("--access_mode", default="a", help="Access mode to metadata file")
 
     args = parser.parse_args()
     return args
@@ -81,18 +84,17 @@ def main(args):
 
     print("Computing MS-SSIM...")
     ms_ssim_list = []
-    pbar = tqdm(enumerate(eval_loader), total=len(eval_loader))
-    for step, batch in pbar:
+    for step, batch in tqdm(enumerate(eval_loader), total=len(eval_loader)):
         img = batch["flair"]
         for batch2 in eval_loader_2:
             img2 = batch2["flair"]
             if batch["flair_meta_dict"]["filename_or_obj"][0] == batch2["flair_meta_dict"]["filename_or_obj"][0]:
                 continue
             ms_ssim_list.append(ms_ssim(img.to(device), img2.to(device)).item())
-        pbar.update()
 
     ms_ssim_list = np.array(ms_ssim_list)
-    print(f"Mean MS-SSIM: {ms_ssim_list.mean():.6f}")
+    metadata = {args.model: {"Diversity": {"MS-SSIM": round(ms_ssim_list.mean().item(), 6)}}}
+    save_metadata(data=metadata, access_mode=args.access_mode)
 
 
 if __name__ == "__main__":
