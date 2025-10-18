@@ -1,11 +1,26 @@
 # Information
-The content of this repository represents work done by Przemysław Mirowski (owner of this repository) during Master's 
-thesis titled "Generation of brain scan images from segmentation maps using diffusion models" done at Lodz University 
-of Technology in Poland.
+The content of this repository represents work done by Przemysław Mirowski during Master's thesis titled "Generation of
+brain scan images from segmentation maps using diffusion models" and science article titled "Diffusion model-based 
+synthesis of brain images for data augmentation" done at Lodz University of Technology in Poland.
 
 This work is licensed under [Creative Commons Attribution-NonCommercial 4.0 International](https://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1).
 
 ## Citation
+```text
+@article{MIROWSKI2026108940,
+    title = {Diffusion model-based synthesis of brain images for data augmentation},
+    journal = {Biomedical Signal Processing and Control},
+    volume = {113},
+    pages = {108940},
+    year = {2026},
+    issn = {1746-8094},
+    doi = {https://doi.org/10.1016/j.bspc.2025.108940},
+    url = {https://www.sciencedirect.com/science/article/pii/S174680942501451X},
+    author = {Przemysław Mirowski and Anna Fabijańska},
+    keywords = {Brain lesion segmentation, ControlNet, Diffusion model, Image augmentation, U-Net, SPADE, Pix2Pix},
+}
+```
+
 ```text
 @mastersthesis{mirowski2024,
     author={Przemysław Mirowski},
